@@ -45,8 +45,23 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
 
-    def nav_version = "2.3.0"
-    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    // -- Navigation
+    def version_navigation = "2.3.0"
+    implementation "androidx.navigation:navigation-fragment-ktx:$version_navigation"
+    implementation "androidx.navigation:navigation-ui-ktx:$version_navigation"
+
+    // -- Retrofit2
+    def version_retrofit = "2.9.0"
+    implementation "com.squareup.retrofit2:retrofit:$version_retrofit"
+
+
+    // -- Moshi
+    def version_moshi = "1.8.0"
+    implementation "com.squareup.moshi:moshi:$version_moshi"
+    implementation "com.squareup.moshi:moshi-kotlin:$version_moshi"
+
+    // -- Retrofit with Moshi Converter
+    implementation "com.squareup.retrofit2:converter-moshi:$version_retrofit"
+
 
 }
