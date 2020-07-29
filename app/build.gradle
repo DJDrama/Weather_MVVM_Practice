@@ -56,12 +56,16 @@ dependencies {
 
 
     // -- Moshi
-    def version_moshi = "1.8.0"
+    def version_moshi = "1.9.3"
     implementation "com.squareup.moshi:moshi:$version_moshi"
     implementation "com.squareup.moshi:moshi-kotlin:$version_moshi"
 
     // -- Retrofit with Moshi Converter
     implementation "com.squareup.retrofit2:converter-moshi:$version_retrofit"
+
+    // -- ViewModel
+    def version_viewmodel = "2.2.0-alpha01"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$version_viewmodel"
 
 
 }

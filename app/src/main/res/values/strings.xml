@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Weather_MVVM_practice</string>
     <string name="text_weather_list">Weather List</string>
+
+    <string name="weather_icon">Weather Icon</string>
+    <string name="description">description</string>
+    <string name="date">date</string>
 </resources>

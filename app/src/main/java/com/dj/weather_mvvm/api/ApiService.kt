@@ -26,7 +26,8 @@ interface ApiService {
         @Query("lat") latitude: String,
         @Query("lon") longitude: String,
         @Query("exclude") exclude: String? = "current,minutely,hourly",
-        @Query("appid") appId: String? = OPEN_WEATHER_KEY
+        @Query("appid") appId: String? = OPEN_WEATHER_KEY,
+        @Query("units") units: String? = "metric"
     ): WeatherInfo
 }
 
