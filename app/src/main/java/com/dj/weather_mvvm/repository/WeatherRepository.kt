@@ -17,6 +17,7 @@ class WeatherRepository {
     }
 
 
+    // SEOUL, KOREA Latitude, Longitude
     suspend fun getWeatherData(): WeatherInfo {
         return Api.retrofitService.getDailyWeather(
             latitude = "37.532600",

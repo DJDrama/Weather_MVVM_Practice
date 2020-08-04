@@ -15,28 +15,23 @@ import kotlinx.android.synthetic.main.fragment_weather_list.*
 
 class WeatherListFragment: Fragment(R.layout.fragment_weather_list){
     private val viewModel: WeatherListViewModel by viewModels()
+    private lateinit var weatherListAdapter: WeatherListAdapter
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.show()
 
-        initRecyclerView()
+        weatherListAdapter = WeatherListAdapter()
+        recycler_view.adapter = weatherListAdapter
+
         viewModel.fetchWeatherInfo()
         subscribeObservers()
     }
-    private fun initRecyclerView(){
-        recycler_view.apply{
-            layoutManager = LinearLayoutManager(this@WeatherListFragment.context)
-//            val dividerItemDecoration = DividerItemDecoration(
-//                this@WeatherListFragment.context,
-//                VERTICAL
-//            )
-//            addItemDecoration(dividerItemDecoration)
-            setHasFixedSize(true)
-        }
-    }
+
     private fun subscribeObservers(){
         viewModel.weatherInfo.observe(viewLifecycleOwner){ weatherInfo ->
-
+            weatherListAdapter.submitList(weatherInfo.dailyList)
         }
     }
 }
