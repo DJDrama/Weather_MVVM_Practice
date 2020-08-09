@@ -11,11 +11,14 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dj.weather_mvvm.R
+import com.dj.weather_mvvm.util.InjectorUtils
 import kotlinx.android.synthetic.main.fragment_weather_list.*
 
 
 class WeatherListFragment: Fragment(R.layout.fragment_weather_list){
-    private val viewModel: WeatherListViewModel by viewModels()
+    private val viewModel: WeatherListViewModel by viewModels {
+        InjectorUtils.provideWeatherListViewModelFactory()
+    }
     private lateinit var weatherListAdapter: WeatherListAdapter
 
 

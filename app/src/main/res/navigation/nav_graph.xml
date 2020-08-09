@@ -19,5 +19,22 @@
         android:id="@+id/weatherListFragment"
         android:name="com.dj.weather_mvvm.ui.WeatherListFragment"
         android:label="@string/text_weather_list"
-        tools:layout="@layout/fragment_weather_list" />
+        tools:layout="@layout/fragment_weather_list">
+        <action
+            android:id="@+id/action_weatherListFragment_to_weatherDetailInfoFragment"
+            app:destination="@id/weatherDetailInfoFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/weatherDetailInfoFragment"
+        android:name="com.dj.weather_mvvm.ui.WeatherDetailInfoFragment"
+        android:label="WeatherDetailInfoFragment"
+        tools:layout="@layout/fragment_weather_detail_info" >
+        <argument
+            android:name="daily"
+            app:argType="com.dj.weather_mvvm.model.Daily" />
+    </fragment>
 </navigation>

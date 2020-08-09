@@ -10,7 +10,11 @@ import com.dj.weather_mvvm.repository.WeatherRepository
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 
-class WeatherListViewModel : ViewModel() {
+class WeatherListViewModel internal constructor(
+    val weatherRepository: WeatherRepository
+) : ViewModel() {
+
+
 
     private val _weatherInfo = MutableLiveData<WeatherInfo>()
     val weatherInfo: LiveData<WeatherInfo>
@@ -18,7 +22,7 @@ class WeatherListViewModel : ViewModel() {
 
     fun fetchWeatherInfo() {
         viewModelScope.launch(IO) {
-            _weatherInfo.postValue(WeatherRepository.getInstance().getWeatherData())
+            _weatherInfo.postValue(weatherRepository.getWeatherData())
         }
     }
 }

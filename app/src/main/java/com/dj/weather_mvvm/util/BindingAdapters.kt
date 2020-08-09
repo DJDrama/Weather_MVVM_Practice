@@ -28,5 +28,5 @@ fun bindImage(imageView: ImageView, imageUrl: String?) {
 @BindingAdapter("dateFormatted")
 fun dateFormatted(tv: TextView, dt: Long) {
     val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
-    tv.text =  formatter.format(Date(dt*1000L))
+    tv.text = "Date: ${formatter.format(Date(dt * 1000L))}"
 }

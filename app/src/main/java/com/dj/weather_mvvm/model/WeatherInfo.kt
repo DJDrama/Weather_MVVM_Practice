@@ -1,6 +1,9 @@
 package com.dj.weather_mvvm.model
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
+import kotlinx.android.parcel.Parcelize
+
 
 data class WeatherInfo(
     val lat: String,
@@ -13,6 +16,7 @@ data class WeatherInfo(
     val dailyList: List<Daily>
 )
 
+@Parcelize
 data class Daily(
     val dt: Long,
     val sunrise: Long,
@@ -32,8 +36,9 @@ data class Daily(
     val clouds: Int,
     val pop: Double,
     val uvi: Double
-)
+): Parcelable
 
+@Parcelize
 data class Temp(
     val day: Double,
     val min: Double,
@@ -41,18 +46,20 @@ data class Temp(
     val night: Double,
     val eve: Double,
     val morn: Double
-)
+): Parcelable
 
+@Parcelize
 data class FeelsLike(
     val day: Double,
     val night: Double,
     val eve: Double,
     val morn: Double
-)
+): Parcelable
 
+@Parcelize
 data class Weather(
     val id: Int,
     val main: String,
     val description: String,
     val icon: String
-)
+): Parcelable
