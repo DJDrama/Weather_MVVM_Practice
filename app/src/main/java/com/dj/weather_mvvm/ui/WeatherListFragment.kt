@@ -1,6 +1,7 @@
 package com.dj.weather_mvvm.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -23,10 +24,15 @@ class WeatherListFragment: Fragment(R.layout.fragment_weather_list){
         (activity as AppCompatActivity).supportActionBar?.show()
 
         weatherListAdapter = WeatherListAdapter()
+        recycler_view.apply{
+            addItemDecoration(DividerItemDecoration(this.context, VERTICAL))
+            adapter = weatherListAdapter
+        }
         recycler_view.adapter = weatherListAdapter
 
         viewModel.fetchWeatherInfo()
         subscribeObservers()
+
     }
 
     private fun subscribeObservers(){

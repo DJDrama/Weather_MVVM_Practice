@@ -12,7 +12,6 @@
         <action
             android:id="@+id/action_splashFragment_to_weatherListFragment"
             app:destination="@id/weatherListFragment"
-            app:launchSingleTop="false"
             app:popUpTo="@id/splashFragment"
             app:popUpToInclusive="true" />
     </fragment>
