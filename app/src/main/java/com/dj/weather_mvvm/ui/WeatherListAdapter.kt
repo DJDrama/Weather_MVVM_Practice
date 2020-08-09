@@ -10,9 +10,14 @@ import com.dj.weather_mvvm.model.Daily
 
 class WeatherListAdapter :
     ListAdapter<Daily, WeatherListAdapter.DailyWeatherViewHolder>(DiffCallback) {
+
     class DailyWeatherViewHolder(private var binding: DailyWeatherViewItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        init{
+            binding.setClickListener{
 
+            }
+        }
         fun bind(daily: Daily) {
             binding.dailyWeather = daily
             //Forces the data binding to execute immediately
@@ -33,7 +38,7 @@ class WeatherListAdapter :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DailyWeatherViewHolder {
-        return DailyWeatherViewHolder(DailyWeatherViewItemBinding.inflate(LayoutInflater.from(parent.context)))
+        return DailyWeatherViewHolder(DailyWeatherViewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun onBindViewHolder(holder: DailyWeatherViewHolder, position: Int) {
