@@ -1,5 +1,6 @@
 package com.dj.weather_mvvm.ui
 
+import android.location.Location
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -20,9 +21,12 @@ class WeatherListViewModel internal constructor(
     val weatherInfo: LiveData<WeatherInfo>
         get() = _weatherInfo
 
-    fun fetchWeatherInfo() {
+    fun fetchWeatherInfo(location: Location) {
         viewModelScope.launch(IO) {
-            _weatherInfo.postValue(weatherRepository.getWeatherData())
+            _weatherInfo.postValue(weatherRepository.getWeatherData(
+                location.latitude,
+                location.longitude
+            ))
         }
     }
 }

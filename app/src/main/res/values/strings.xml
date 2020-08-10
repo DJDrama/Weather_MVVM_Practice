@@ -20,5 +20,6 @@
 
     <string name="feels_like">Feels Like(°C)</string>
     <string name="others">Others</string>
+    <string name="set_permissions_in_settings">Go to Settings -> Apps and Notifications -> Weather_MVVM_practice -> App Permissions and grant access to Location.</string>
 
 </resources>

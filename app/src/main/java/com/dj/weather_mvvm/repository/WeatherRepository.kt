@@ -18,10 +18,10 @@ class WeatherRepository {
 
 
     // SEOUL, KOREA Latitude, Longitude
-    suspend fun getWeatherData(): WeatherInfo {
+    suspend fun getWeatherData(lat: Double, long: Double): WeatherInfo {
         return Api.retrofitService.getDailyWeather(
-            latitude = "37.532600",
-            longitude = "127.024612"
+            latitude = lat.toString(),
+            longitude = long.toString()
         )
     }
 
