@@ -30,3 +30,14 @@ fun dateFormatted(tv: TextView, dt: Long) {
     val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
     tv.text = "Date: ${formatter.format(Date(dt * 1000L))}"
 }
+
+@BindingAdapter(value=["bind:dt", "bind:isSunSet"], requireAll = true)
+fun sunSetRise(tv: TextView, dt: Long, isSunSet: Boolean) {
+    val formatter = SimpleDateFormat("yyyy-MM-dd a hh:mm:ss", Locale.KOREA)
+    tv.text = if (isSunSet) {
+        "Sun set: ${formatter.format(Date(dt * 1000L))}"
+    } else {
+        "Sun rise: ${formatter.format(Date(dt * 1000L))}"
+    }
+
+}

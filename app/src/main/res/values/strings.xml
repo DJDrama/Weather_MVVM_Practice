@@ -5,4 +5,20 @@
     <string name="weather_icon">Weather Icon</string>
     <string name="description">description</string>
     <string name="date">date</string>
+
+    <string name="temperature">Temperature: %1$s°C ~ %2$s°C</string>
+    <string name="detail">Detail</string>
+    <string name="temperature_text">Temperature(°C)</string>
+    <string name="temp_kind">%1$s: %2$s</string>
+
+    <string name="day">day</string>
+    <string name="min">min</string>
+    <string name="max">max</string>
+    <string name="night">night</string>
+    <string name="eve">eve</string>
+    <string name="morn">morn</string>
+
+    <string name="feels_like">Feels Like(°C)</string>
+    <string name="others">Others</string>
+
 </resources>
