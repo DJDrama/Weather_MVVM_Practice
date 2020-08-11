@@ -220,7 +220,8 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
 
     private fun subscribeObservers() {
         viewModel.weatherInfo.observe(viewLifecycleOwner) { weatherInfo ->
-            (activity as AppCompatActivity).supportActionBar?.setTitle(weatherInfo.timeZone)
+            (activity as AppCompatActivity).supportActionBar?.title = weatherInfo.timeZone
+            progressBar.visibility=View.GONE
             weatherListAdapter.submitList(weatherInfo.dailyList)
         }
     }
