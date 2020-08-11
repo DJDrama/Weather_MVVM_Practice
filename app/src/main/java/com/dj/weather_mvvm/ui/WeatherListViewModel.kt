@@ -15,18 +15,18 @@ class WeatherListViewModel internal constructor(
     val weatherRepository: WeatherRepository
 ) : ViewModel() {
 
-
-
     private val _weatherInfo = MutableLiveData<WeatherInfo>()
     val weatherInfo: LiveData<WeatherInfo>
         get() = _weatherInfo
 
     fun fetchWeatherInfo(location: Location) {
         viewModelScope.launch(IO) {
-            _weatherInfo.postValue(weatherRepository.getWeatherData(
+            val weatherInfo =  weatherRepository.getWeatherData(
                 location.latitude,
                 location.longitude
-            ))
+            )
+            _weatherInfo.postValue(
+               weatherInfo)
         }
     }
 }

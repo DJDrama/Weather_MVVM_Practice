@@ -9,11 +9,11 @@ import android.location.LocationManager
 import android.location.LocationManager.GPS_PROVIDER
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -49,12 +49,20 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.show()
+        locationManager =
+            this.context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        weatherListAdapter = WeatherListAdapter()
+        recycler_view.apply {
+            addItemDecoration(DividerItemDecoration(this.context, VERTICAL))
+            adapter = weatherListAdapter
+        }
+        recycler_view.adapter = weatherListAdapter
+        subscribeObservers()
+
         requestPermissionsIfNecessary()
         if (!mHasPermission) {
             return
         }
-        locationManager =
-            this.context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         if (!locationManager.isProviderEnabled(GPS_PROVIDER)) {
             turnOnGps()
         } else {
@@ -66,15 +74,6 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
 //                viewModel.fetchWeatherInfo(it)
 //            }
 //        }
-
-        weatherListAdapter = WeatherListAdapter()
-        recycler_view.apply {
-            addItemDecoration(DividerItemDecoration(this.context, VERTICAL))
-            adapter = weatherListAdapter
-        }
-        recycler_view.adapter = weatherListAdapter
-
-        subscribeObservers()
 
     }
 
@@ -95,10 +94,10 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
     private fun getCurrentLocation() {
         val location: Location? =
             locationManager.getLastKnownLocation(GPS_PROVIDER)
-        location?.let{
+        location?.let {
             viewModel.fetchWeatherInfo(location)
-
-        } ?:Toast.makeText(this.requireContext(), "Unable to find location.", Toast.LENGTH_SHORT).show()
+        } ?: Toast.makeText(this.requireContext(), "Unable to find location.", Toast.LENGTH_SHORT)
+            .show()
     }
 
     private fun requestPermissionsIfNecessary() {
@@ -114,6 +113,8 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
                     Snackbar.LENGTH_INDEFINITE
                 ).show()
             }
+        } else {
+            getCurrentLocation()
         }
     }
 
@@ -125,21 +126,21 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         // Check if permissions were granted after a permissions request flow.
         if (requestCode == REQUEST_CODE_PERMISSION) {
+            Log.e("fuck", "come here?");
             requestPermissionsIfNecessary() // no-op if permissions are granted already.
         }
     }
 
     private fun checkPermission(): Boolean {
-        var hasPermission: Boolean
-        hasPermission = ContextCompat.checkSelfPermission(
+        return ContextCompat.checkSelfPermission(
             requireContext(),
             locationPermission
         ) == PackageManager.PERMISSION_GRANTED
-        return hasPermission
     }
 
     private fun subscribeObservers() {
         viewModel.weatherInfo.observe(viewLifecycleOwner) { weatherInfo ->
+            Log.e("fuck", "asdf ? " + weatherInfo)
             (activity as AppCompatActivity).supportActionBar?.setTitle(weatherInfo.timeZone)
             weatherListAdapter.submitList(weatherInfo.dailyList)
         }
