@@ -1,20 +1,25 @@
 package com.dj.weather_mvvm.ui
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.location.LocationManager.GPS_PROVIDER
 import android.os.Bundle
+import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
@@ -22,29 +27,34 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import com.dj.weather_mvvm.R
 import com.dj.weather_mvvm.util.InjectorUtils
-import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.*
+import com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_weather_list.*
 
 
 class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
     companion object {
+        private const val REQUESTING_LOCATION_UPDATES_KEY = "REQUESTING_LOCATION_UPDATES_KEY"
         private const val REQUEST_CODE_PERMISSION = 101
-        private const val locationPermission = android.Manifest.permission.ACCESS_FINE_LOCATION
+        private const val locationPermission = Manifest.permission.ACCESS_FINE_LOCATION
         private const val MAX_NUMBER_REQUEST_PERMISSIONS = 2
+        private const val UPDATE_INTERVAL = 10 * 1000L
+        private const val FASTEST_INTERVAL = 2000L
+        private const val REQUEST_CHECK_SETTINGS = 1011
     }
-
     private val viewModel: WeatherListViewModel by viewModels {
         InjectorUtils.provideWeatherListViewModelFactory()
     }
     private lateinit var weatherListAdapter: WeatherListAdapter
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-
     private var mHasPermission: Boolean = false
     private var mPermissionRequestCount: Int = 0
-
     private lateinit var locationManager: LocationManager
-
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var mLocationRequest: LocationRequest
+    private lateinit var locationCallback: LocationCallback
+    private var requestingLocationUpdates = false;
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -58,47 +68,118 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
         }
         recycler_view.adapter = weatherListAdapter
         subscribeObservers()
-
         requestPermissionsIfNecessary()
-        if (!mHasPermission) {
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult?) {
+                locationResult ?: return
+                for (location in locationResult.locations) {
+                    // Update UI with location data
+                    viewModel.fetchWeatherInfo(location)
+                    stopLocationUpdates()
+                    //just do once so break
+                    break
+                }
+            }
+        }
+        fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(this.requireContext())
+        if (mHasPermission) {
+            getLastLocation()
+        }
+        updateValuesFromBundle(savedInstanceState)
+    }
+
+    private fun getLastLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            Snackbar.make(
+                coordinator_layout,
+                R.string.set_permissions_in_settings,
+                Snackbar.LENGTH_INDEFINITE
+            ).show()
             return
         }
-        if (!locationManager.isProviderEnabled(GPS_PROVIDER)) {
-            turnOnGps()
-        } else {
-            getCurrentLocation()
+        if (::fusedLocationProviderClient.isInitialized) {
+            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location: Location? ->
+                location?.let {
+                    viewModel.fetchWeatherInfo(it)
+                } ?: setLocationSettings()
+            }
         }
-//        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this.requireContext())
-//        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-//            location?.let{
-//                viewModel.fetchWeatherInfo(it)
+    }
+
+
+    private fun setLocationSettings() {
+        // Create the location request to start receiving updates
+        // https://developer.android.com/training/location/change-location-settings
+        mLocationRequest = LocationRequest.create().apply {
+            priority = PRIORITY_HIGH_ACCURACY
+            interval = UPDATE_INTERVAL
+            fastestInterval = FASTEST_INTERVAL
+        }
+
+        // Create LocationSettingsRequest object using location request
+        val builder = LocationSettingsRequest.Builder().addLocationRequest(mLocationRequest)
+        val locationSettingsRequest = builder.build()
+
+        // Check whether location settings are satisfied
+        // https://developers.google.com/android/reference/com/google/android/gms/location/SettingsClient
+        val settingsClient = LocationServices.getSettingsClient(requireContext())
+        val task = settingsClient.checkLocationSettings(locationSettingsRequest)
+        task.addOnSuccessListener { locationSettingsResponse ->
+            // All location settings are satisfied. The client can initialize
+            // location requests here.
+            requestingLocationUpdates = true
+            startLocationUpdates()
+        }
+        task.addOnFailureListener { exception ->
+            if (exception is ResolvableApiException) {
+                // Location settings are not satisfied, but this can be fixed
+                // by showing the user a dialog.
+                try {
+                    // Show the dialog by calling startResolutionForResult(),
+                    // and check the result in onActivityResult().
+                    exception.startResolutionForResult(
+                        activity,
+                        REQUEST_CHECK_SETTINGS
+                    )
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    // Ignore the error.
+
+                }
+            }
+        }
+    }
+
+    private fun startLocationUpdates() {
+        if (checkPermission()) {
+            fusedLocationProviderClient.requestLocationUpdates(
+                mLocationRequest,
+                locationCallback,
+                Looper.getMainLooper()
+            )
+        }
+    }
+//
+//    private fun turnOnGps() {
+//        val builder: AlertDialog.Builder = AlertDialog.Builder(this.requireContext())
+//        builder.setMessage("Enable GPS").setCancelable(false)
+//            .setPositiveButton("Yes") { dialog, which ->
+//                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
 //            }
-//        }
+//            .setNegativeButton("No") { dialog, which ->
+//                dialog.cancel()
+//            }
+//        val alertDialog: AlertDialog = builder.create()
+//        alertDialog.show()
+//    }
 
-    }
-
-    private fun turnOnGps() {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(this.requireContext())
-        builder.setMessage("Enable GPS").setCancelable(false)
-            .setPositiveButton("Yes") { dialog, which ->
-                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-            }
-            .setNegativeButton("No") { dialog, which ->
-                dialog.cancel()
-            }
-        val alertDialog: AlertDialog = builder.create()
-        alertDialog.show()
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun getCurrentLocation() {
-        val location: Location? =
-            locationManager.getLastKnownLocation(GPS_PROVIDER)
-        location?.let {
-            viewModel.fetchWeatherInfo(location)
-        } ?: Toast.makeText(this.requireContext(), "Unable to find location.", Toast.LENGTH_SHORT)
-            .show()
-    }
 
     private fun requestPermissionsIfNecessary() {
         mHasPermission = checkPermission()
@@ -114,7 +195,7 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
                 ).show()
             }
         } else {
-            getCurrentLocation()
+            getLastLocation()
         }
     }
 
@@ -126,7 +207,6 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         // Check if permissions were granted after a permissions request flow.
         if (requestCode == REQUEST_CODE_PERMISSION) {
-            Log.e("fuck", "come here?");
             requestPermissionsIfNecessary() // no-op if permissions are granted already.
         }
     }
@@ -140,20 +220,45 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
 
     private fun subscribeObservers() {
         viewModel.weatherInfo.observe(viewLifecycleOwner) { weatherInfo ->
-            Log.e("fuck", "asdf ? " + weatherInfo)
             (activity as AppCompatActivity).supportActionBar?.setTitle(weatherInfo.timeZone)
             weatherListAdapter.submitList(weatherInfo.dailyList)
         }
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        if (requestingLocationUpdates) startLocationUpdates()
-//    }
-//
-//    private fun startLocationUpdates() {
-//        fusedLocationClient.requestLocationUpdates(locationRequest,
-//            locationCallback,
-//            Looper.getMainLooper())
-//    }
+    override fun onResume() {
+        super.onResume()
+        if (requestingLocationUpdates) {
+            startLocationUpdates()
+        } else {
+            setLocationSettings()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        stopLocationUpdates()
+
+    }
+
+    private fun stopLocationUpdates() {
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, requestingLocationUpdates)
+        super.onSaveInstanceState(outState)
+    }
+
+    private fun updateValuesFromBundle(savedInstanceState: Bundle?) {
+        savedInstanceState ?: return
+        // Update the value of requestingLocationUpdates from the Bundle.
+        if (savedInstanceState.keySet().contains(REQUESTING_LOCATION_UPDATES_KEY)) {
+            requestingLocationUpdates = savedInstanceState.getBoolean(
+                REQUESTING_LOCATION_UPDATES_KEY
+            )
+        }
+        // ...
+        // Update UI to match restored state
+        //updateUI()
+    }
 }
