@@ -20,6 +20,16 @@
 
     <string name="feels_like">Feels Like(°C)</string>
     <string name="others">Others</string>
+    <string name="pressure">Pressure: %dhPa</string>
+    <string name="humidity">Humidity: %d%%</string>
+    <string name="dew_point">Dew Point: %.2fkelvin</string>
+    <string name="wind_speed">Wind Speed: %.2fmetre/sec</string>
+    <string name="wind_deg">Wind Degree: %d(metrological)</string>
+    <string name="clouds">Cloudiness: %d%%</string>
+    <string name="pop">Probability of Precipitation: %.2f%%</string>
+    <string name="uvi">UV Index: %.2f%%</string>
+
+
     <string name="set_permissions_in_settings">Go to Settings -> Apps and Notifications -> Weather_MVVM_practice -> App Permissions and grant access to Location.</string>
 
 </resources>
