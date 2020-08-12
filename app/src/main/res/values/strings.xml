@@ -31,5 +31,7 @@
 
 
     <string name="set_permissions_in_settings">Go to Settings -> Apps and Notifications -> Weather_MVVM_practice -> App Permissions and grant access to Location.</string>
+    <string name="fetching_location" >Fetching Your Location~!</string>
+    <string name="fetching_weather_info" >Fetching Weather Info~!</string>
 
 </resources>

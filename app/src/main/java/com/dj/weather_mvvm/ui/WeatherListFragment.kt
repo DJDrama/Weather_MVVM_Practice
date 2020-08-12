@@ -74,7 +74,7 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
                 locationResult ?: return
                 for (location in locationResult.locations) {
                     // Update UI with location data
-                    viewModel.fetchWeatherInfo(location)
+                    fetchWeatherInfo(location)
                     stopLocationUpdates()
                     //just do once so break
                     break
@@ -87,6 +87,14 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
             getLastLocation()
         }
         updateValuesFromBundle(savedInstanceState)
+
+        swipe_refresh_layout.setOnRefreshListener {
+            recycler_view.visibility=View.INVISIBLE
+            progressBar.visibility=View.VISIBLE
+            tv_desc.visibility = View.VISIBLE
+            tv_desc.setText(R.string.fetching_location)
+            getLastLocation()
+        }
     }
 
     private fun getLastLocation() {
@@ -108,10 +116,15 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
         if (::fusedLocationProviderClient.isInitialized) {
             fusedLocationProviderClient.lastLocation.addOnSuccessListener { location: Location? ->
                 location?.let {
-                    viewModel.fetchWeatherInfo(it)
+                    fetchWeatherInfo(it)
                 } ?: setLocationSettings()
             }
         }
+    }
+
+    private fun fetchWeatherInfo(location: Location){
+        tv_desc.setText(R.string.fetching_weather_info)
+        viewModel.fetchWeatherInfo(location)
     }
 
 
@@ -166,20 +179,6 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
             )
         }
     }
-//
-//    private fun turnOnGps() {
-//        val builder: AlertDialog.Builder = AlertDialog.Builder(this.requireContext())
-//        builder.setMessage("Enable GPS").setCancelable(false)
-//            .setPositiveButton("Yes") { dialog, which ->
-//                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-//            }
-//            .setNegativeButton("No") { dialog, which ->
-//                dialog.cancel()
-//            }
-//        val alertDialog: AlertDialog = builder.create()
-//        alertDialog.show()
-//    }
-
 
     private fun requestPermissionsIfNecessary() {
         mHasPermission = checkPermission()
@@ -221,7 +220,12 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
     private fun subscribeObservers() {
         viewModel.weatherInfo.observe(viewLifecycleOwner) { weatherInfo ->
             (activity as AppCompatActivity).supportActionBar?.title = weatherInfo.timeZone
+            recycler_view.visibility=View.VISIBLE
             progressBar.visibility=View.GONE
+            tv_desc.visibility = View.GONE
+            if(swipe_refresh_layout.isRefreshing){
+                swipe_refresh_layout.isRefreshing = false
+            }
             weatherListAdapter.submitList(weatherInfo.dailyList)
         }
     }
