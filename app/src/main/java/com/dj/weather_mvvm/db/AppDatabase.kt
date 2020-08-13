@@ -11,10 +11,8 @@ import com.dj.weather_mvvm.util.DATABASE_NAME
 
 @Database(entities = [WeatherInfo::class, Daily::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
-
     abstract fun weatherInfoDao(): WeatherInfoDao
     abstract fun dailyDao(): DailyDao
-
     companion object {
         @Volatile
         private var instance: AppDatabase? = null
