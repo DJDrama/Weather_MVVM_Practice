@@ -14,7 +14,6 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun weatherInfoDao(): WeatherInfoDao
     abstract fun dailyDao(): DailyDao
-    
 
     companion object {
         @Volatile
