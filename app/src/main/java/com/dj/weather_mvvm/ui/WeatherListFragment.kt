@@ -44,8 +44,9 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
         private const val FASTEST_INTERVAL = 2000L
         private const val REQUEST_CHECK_SETTINGS = 1011
     }
+
     private val viewModel: WeatherListViewModel by viewModels {
-        InjectorUtils.provideWeatherListViewModelFactory()
+        InjectorUtils.provideWeatherListViewModelFactory(this)
     }
     private lateinit var weatherListAdapter: WeatherListAdapter
     private var mHasPermission: Boolean = false
@@ -54,7 +55,7 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var mLocationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
-    private var requestingLocationUpdates = false;
+    private var requestingLocationUpdates = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -74,10 +75,6 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
                 locationResult ?: return
                 for (location in locationResult.locations) {
                     // Update UI with location data
-                    /**
-                     * 1. location save into database
-                     * 2. compare on startup
-                     * **/
                     fetchWeatherInfo(location)
                     stopLocationUpdates()
                     //just do once so break
@@ -93,8 +90,8 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
         updateValuesFromBundle(savedInstanceState)
 
         swipe_refresh_layout.setOnRefreshListener {
-            recycler_view.visibility=View.INVISIBLE
-            progressBar.visibility=View.VISIBLE
+            recycler_view.visibility = View.INVISIBLE
+            progressBar.visibility = View.VISIBLE
             tv_desc.visibility = View.VISIBLE
             tv_desc.setText(R.string.fetching_location)
             getLastLocation()
@@ -126,7 +123,7 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
         }
     }
 
-    private fun fetchWeatherInfo(location: Location){
+    private fun fetchWeatherInfo(location: Location) {
         tv_desc.setText(R.string.fetching_weather_info)
         viewModel.fetchWeatherInfo(location)
     }
@@ -224,10 +221,10 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
     private fun subscribeObservers() {
         viewModel.weatherInfo.observe(viewLifecycleOwner) { weatherInfo ->
             (activity as AppCompatActivity).supportActionBar?.title = weatherInfo.timeZone
-            recycler_view.visibility=View.VISIBLE
-            progressBar.visibility=View.GONE
+            recycler_view.visibility = View.VISIBLE
+            progressBar.visibility = View.GONE
             tv_desc.visibility = View.GONE
-            if(swipe_refresh_layout.isRefreshing){
+            if (swipe_refresh_layout.isRefreshing) {
                 swipe_refresh_layout.isRefreshing = false
             }
             weatherListAdapter.submitList(weatherInfo.dailyList)

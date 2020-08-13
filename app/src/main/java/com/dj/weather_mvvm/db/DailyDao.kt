@@ -9,6 +9,6 @@ import com.dj.weather_mvvm.model.WeatherInfo
 interface DailyDao {
 
     @Insert
-    suspend fun insert(daily: Daily)
+    suspend fun insert(daily: List<Daily>)
 
 }

@@ -3,6 +3,7 @@ package com.dj.weather_mvvm.model
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 
@@ -16,6 +17,7 @@ data class WeatherInfo(
     @Json(name = "timezone_offset")
     val timezoneOffset: String,
     @Json(name = "daily")
+    @Ignore
     val dailyList: List<Daily>
 )
 

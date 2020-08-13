@@ -2,17 +2,21 @@ package com.dj.weather_mvvm.repository
 
 import com.dj.weather_mvvm.api.Api
 import com.dj.weather_mvvm.api.ApiService
+import com.dj.weather_mvvm.db.DailyDao
+import com.dj.weather_mvvm.model.Daily
 import com.dj.weather_mvvm.model.WeatherInfo
 
-class WeatherRepository {
+class WeatherRepository private constructor(
+    private val dailyDao: DailyDao
+){
     companion object {
         //For Singleton Instantiation
         @Volatile
         private var instance: WeatherRepository? = null
 
-        fun getInstance() =
+        fun getInstance(dailyDao: DailyDao) =
             instance ?: synchronized(this) {
-                instance ?: WeatherRepository().also { instance = it }
+                instance ?: WeatherRepository(dailyDao).also { instance = it }
             }
     }
 
@@ -23,6 +27,10 @@ class WeatherRepository {
             latitude = lat.toString(),
             longitude = long.toString()
         )
+    }
+
+    suspend fun insertDailyItems(dailyItems: List<Daily>){
+        dailyDao.insert(dailyItems)
     }
 
 
