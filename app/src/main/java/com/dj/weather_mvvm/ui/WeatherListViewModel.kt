@@ -21,12 +21,12 @@ class WeatherListViewModel internal constructor(
 
     fun fetchWeatherInfo(location: Location) {
         viewModelScope.launch(IO) {
-            val weatherInfo =  weatherRepository.getWeatherData(
+            val weatherInfo = weatherRepository.getWeatherData(
                 location.latitude,
                 location.longitude
             )
-            _weatherInfo.postValue(
-               weatherInfo)
+            weatherRepository.insertWeatherData(weatherInfo)
+            _weatherInfo.postValue(weatherInfo)
         }
     }
 }

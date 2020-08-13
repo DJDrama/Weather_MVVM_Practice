@@ -1,11 +1,14 @@
 package com.dj.weather_mvvm.model
 
 import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Daily(
+    @PrimaryKey
     val dt: Long,
     val sunrise: Long,
     val sunset: Long,

@@ -13,7 +13,7 @@ object InjectorUtils{
 
     private fun getWeatherRepository(context: Context): WeatherRepository{
         return WeatherRepository.getInstance(
-            AppDatabase.getInstance(context.applicationContext).dailyDao()
+            AppDatabase.getInstance(context.applicationContext).weatherInfoDao()
         )
     }
 

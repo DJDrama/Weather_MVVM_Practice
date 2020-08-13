@@ -1,22 +1,20 @@
 package com.dj.weather_mvvm.repository
 
 import com.dj.weather_mvvm.api.Api
-import com.dj.weather_mvvm.api.ApiService
-import com.dj.weather_mvvm.db.DailyDao
-import com.dj.weather_mvvm.model.Daily
+import com.dj.weather_mvvm.db.WeatherInfoDao
 import com.dj.weather_mvvm.model.WeatherInfo
 
 class WeatherRepository private constructor(
-    private val dailyDao: DailyDao
+    private val weatherInfoDao: WeatherInfoDao
 ){
     companion object {
         //For Singleton Instantiation
         @Volatile
         private var instance: WeatherRepository? = null
 
-        fun getInstance(dailyDao: DailyDao) =
+        fun getInstance(weatherInfoDao: WeatherInfoDao) =
             instance ?: synchronized(this) {
-                instance ?: WeatherRepository(dailyDao).also { instance = it }
+                instance ?: WeatherRepository(weatherInfoDao).also { instance = it }
             }
     }
 
@@ -29,8 +27,8 @@ class WeatherRepository private constructor(
         )
     }
 
-    suspend fun insertDailyItems(dailyItems: List<Daily>){
-        dailyDao.insert(dailyItems)
+    suspend fun insertWeatherData(weatherData: WeatherInfo){
+       weatherInfoDao.insert(weatherData)
     }
 
 
