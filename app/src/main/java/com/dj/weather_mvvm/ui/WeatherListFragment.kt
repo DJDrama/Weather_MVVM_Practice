@@ -74,6 +74,10 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
                 locationResult ?: return
                 for (location in locationResult.locations) {
                     // Update UI with location data
+                    /**
+                     * 1. location save into database
+                     * 2. compare on startup
+                     * **/
                     fetchWeatherInfo(location)
                     stopLocationUpdates()
                     //just do once so break
