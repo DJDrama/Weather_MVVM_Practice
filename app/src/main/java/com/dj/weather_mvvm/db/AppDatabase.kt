@@ -13,6 +13,7 @@ import com.dj.weather_mvvm.util.DATABASE_NAME
 abstract class AppDatabase : RoomDatabase() {
     abstract fun weatherInfoDao(): WeatherInfoDao
     abstract fun dailyDao(): DailyDao
+
     
     companion object {
         @Volatile
