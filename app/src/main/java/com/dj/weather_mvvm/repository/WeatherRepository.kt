@@ -1,6 +1,5 @@
 package com.dj.weather_mvvm.repository
 
-import android.util.Log
 import com.dj.weather_mvvm.api.Api
 import com.dj.weather_mvvm.db.WeatherInfoDao
 import com.dj.weather_mvvm.model.WeatherInfo

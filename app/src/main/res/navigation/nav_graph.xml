@@ -31,7 +31,7 @@
     <fragment
         android:id="@+id/weatherDetailInfoFragment"
         android:name="com.dj.weather_mvvm.ui.WeatherDetailInfoFragment"
-        android:label="WeatherDetailInfoFragment"
+        android:label="@string/detail"
         tools:layout="@layout/fragment_weather_detail_info" >
         <argument
             android:name="daily"
