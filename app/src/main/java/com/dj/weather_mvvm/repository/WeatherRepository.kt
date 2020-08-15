@@ -20,7 +20,7 @@ class WeatherRepository private constructor(
 
 
     // SEOUL, KOREA Latitude, Longitude
-    suspend fun getWeatherData(lat: Double, long: Double): WeatherInfo {
+    suspend fun getWeatherDataFromApi(lat: Double, long: Double): WeatherInfo {
         return Api.retrofitService.getDailyWeather(
             latitude = lat.toString(),
             longitude = long.toString()
@@ -29,6 +29,10 @@ class WeatherRepository private constructor(
 
     suspend fun insertWeatherData(weatherData: WeatherInfo){
        weatherInfoDao.insert(weatherData)
+    }
+
+    suspend fun getWeatherDataFromCache(): WeatherInfo?{
+        return weatherInfoDao.getWeatherInfo()
     }
 
 

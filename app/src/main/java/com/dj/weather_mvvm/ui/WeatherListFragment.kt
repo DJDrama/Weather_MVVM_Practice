@@ -26,6 +26,7 @@ import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import com.dj.weather_mvvm.R
+import com.dj.weather_mvvm.util.ConnectionLiveData
 import com.dj.weather_mvvm.util.InjectorUtils
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
@@ -48,6 +49,7 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
     private val viewModel: WeatherListViewModel by viewModels {
         InjectorUtils.provideWeatherListViewModelFactory(this)
     }
+    private lateinit var connectionLiveData: ConnectionLiveData
     private lateinit var weatherListAdapter: WeatherListAdapter
     private var mHasPermission: Boolean = false
     private var mPermissionRequestCount: Int = 0
@@ -60,6 +62,7 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.show()
+        connectionLiveData = ConnectionLiveData(this.requireContext())
         locationManager =
             this.context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         weatherListAdapter = WeatherListAdapter()
@@ -69,13 +72,18 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
         }
         recycler_view.adapter = weatherListAdapter
         subscribeObservers()
+
+
+        //fetch data from Database First
+        viewModel.getWeatherDataFromDatabaseIfNotNull()
+
         requestPermissionsIfNecessary()
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult?) {
                 locationResult ?: return
                 for (location in locationResult.locations) {
                     // Update UI with location data
-                    fetchWeatherInfo(location, 1)
+                    fetchWeatherInfo(location)
                     stopLocationUpdates()
                     //just do once so break
                     break
@@ -117,14 +125,13 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
         if (::fusedLocationProviderClient.isInitialized) {
             fusedLocationProviderClient.lastLocation.addOnSuccessListener { location: Location? ->
                 location?.let {
-                    fetchWeatherInfo(it, 2)
+                    fetchWeatherInfo(it)
                 } ?: setLocationSettings()
             }
         }
     }
 
-    private fun fetchWeatherInfo(location: Location, value: Int) {
-        Log.e("check", "check : " + value)
+    private fun fetchWeatherInfo(location: Location) {
         tv_desc.setText(R.string.fetching_weather_info)
         viewModel.fetchWeatherInfo(location)
     }
@@ -229,6 +236,9 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
                 swipe_refresh_layout.isRefreshing = false
             }
             weatherListAdapter.submitList(weatherInfo.dailyList)
+        }
+        connectionLiveData.observe(viewLifecycleOwner) {
+            viewModel.setNetworkAvailability(it)
         }
     }
 

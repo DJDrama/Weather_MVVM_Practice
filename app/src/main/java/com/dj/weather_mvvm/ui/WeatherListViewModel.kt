@@ -10,6 +10,7 @@ import com.dj.weather_mvvm.model.WeatherInfo
 import com.dj.weather_mvvm.repository.WeatherRepository
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class WeatherListViewModel internal constructor(
     val weatherRepository: WeatherRepository
@@ -19,14 +20,36 @@ class WeatherListViewModel internal constructor(
     val weatherInfo: LiveData<WeatherInfo>
         get() = _weatherInfo
 
+    private val _isNetworkAvailable = MutableLiveData<Boolean>()
+
+    init {
+        _isNetworkAvailable.value = false
+    }
+
+    fun setNetworkAvailability(value: Boolean) {
+        _isNetworkAvailable.value = value
+    }
+
     fun fetchWeatherInfo(location: Location) {
+        if (!_isNetworkAvailable.value!!) return
         viewModelScope.launch(IO) {
-            val weatherInfo = weatherRepository.getWeatherData(
+            val weatherInfo = weatherRepository.getWeatherDataFromApi(
                 location.latitude,
                 location.longitude
             )
             weatherRepository.insertWeatherData(weatherInfo)
             _weatherInfo.postValue(weatherInfo)
+        }
+    }
+
+    fun getWeatherDataFromDatabaseIfNotNull() {
+        viewModelScope.launch {
+            withContext(IO) {
+                val weatherInfo = weatherRepository.getWeatherDataFromCache()
+                weatherInfo?.let {
+                    _weatherInfo.postValue(it)
+                }
+            }
         }
     }
 }
