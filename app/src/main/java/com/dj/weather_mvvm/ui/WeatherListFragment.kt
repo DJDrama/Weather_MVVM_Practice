@@ -75,7 +75,7 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
                 locationResult ?: return
                 for (location in locationResult.locations) {
                     // Update UI with location data
-                    fetchWeatherInfo(location)
+                    fetchWeatherInfo(location, 1)
                     stopLocationUpdates()
                     //just do once so break
                     break
@@ -117,13 +117,14 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
         if (::fusedLocationProviderClient.isInitialized) {
             fusedLocationProviderClient.lastLocation.addOnSuccessListener { location: Location? ->
                 location?.let {
-                    fetchWeatherInfo(it)
+                    fetchWeatherInfo(it, 2)
                 } ?: setLocationSettings()
             }
         }
     }
 
-    private fun fetchWeatherInfo(location: Location) {
+    private fun fetchWeatherInfo(location: Location, value: Int) {
+        Log.e("check", "check : " + value)
         tv_desc.setText(R.string.fetching_weather_info)
         viewModel.fetchWeatherInfo(location)
     }

@@ -1,13 +1,11 @@
 package com.dj.weather_mvvm.model
 
 import android.os.Parcelable
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.Ignore
-import androidx.room.PrimaryKey
+import androidx.room.*
+import com.dj.weather_mvvm.db.Converters
 import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
-
+@TypeConverters(Converters::class)
 @Entity(tableName = "weather_info")
 data class WeatherInfo(
     val lat: String,
@@ -19,6 +17,7 @@ data class WeatherInfo(
     @Json(name = "timezone_offset")
     val timezoneOffset: String,
     @Json(name = "daily")
+    @ColumnInfo(name="daily_list")
     val dailyList: List<Daily>
 )
 

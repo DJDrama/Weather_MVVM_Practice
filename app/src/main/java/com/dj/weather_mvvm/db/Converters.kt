@@ -17,21 +17,63 @@
 package com.dj.weather_mvvm.db
 
 import androidx.room.TypeConverter
-import java.util.*
+import com.dj.weather_mvvm.api.moshi
+import com.dj.weather_mvvm.model.Daily
+import com.dj.weather_mvvm.model.FeelsLike
+import com.dj.weather_mvvm.model.Temp
+import com.dj.weather_mvvm.model.Weather
+import com.squareup.moshi.Types
 
 /**
  * Type converters to allow Room to reference complex data types.
  */
 class Converters {
+    //Daily
+    private val dailyType = Types.newParameterizedType(List::class.java, Daily::class.java)
+    private val dailyAdapter = moshi.adapter<List<Daily>>(dailyType)
+    @TypeConverter
+    fun stringToDailyList(string: String): List<Daily> {
+        return dailyAdapter.fromJson(string).orEmpty()
+    }
 
-//    @TypeConverter
-//    fun dailyListToString(value: String?): List<String?>? {
-//        val listType: Type = object : TypeToken<ArrayList<String?>?>() {}.getType()
-//        return Gson().fromJson(value, listType)
-//    }
-//
-//    @TypeConverter
-//    fun stringToDailyList(list: ArrayList<String?>?): String? {
-//
-//    }
+    @TypeConverter
+    fun toDailyJson(dailys: List<Daily>): String {
+        return dailyAdapter.toJson(dailys)
+    }
+
+    //Temp
+    private val tempAdapter = moshi.adapter(Temp::class.java)
+    @TypeConverter
+    fun stringToTemp(string: String): Temp?{
+        return tempAdapter.fromJson(string)
+    }
+
+    @TypeConverter
+    fun toJson(temp: Temp): String {
+        return tempAdapter.toJson(temp)
+    }
+
+    //FeelsLike
+    private val feelsLikeAdapter = moshi.adapter(FeelsLike::class.java)
+    @TypeConverter
+    fun stringToFeelsLike(string: String): FeelsLike?{
+        return feelsLikeAdapter.fromJson(string)
+    }
+
+    @TypeConverter
+    fun toJson(feelsLike: FeelsLike): String {
+        return feelsLikeAdapter.toJson(feelsLike)
+    }
+
+    //Weather
+    private val weatherAdapter = moshi.adapter(Weather::class.java)
+    @TypeConverter
+    fun stringToWeather(string: String): Weather?{
+        return weatherAdapter.fromJson(string)
+    }
+
+    @TypeConverter
+    fun toJson(weather: Weather): String {
+        return weatherAdapter.toJson(weather)
+    }
 }

@@ -1,5 +1,6 @@
 package com.dj.weather_mvvm.repository
 
+import android.util.Log
 import com.dj.weather_mvvm.api.Api
 import com.dj.weather_mvvm.db.WeatherInfoDao
 import com.dj.weather_mvvm.model.WeatherInfo
@@ -11,7 +12,6 @@ class WeatherRepository private constructor(
         //For Singleton Instantiation
         @Volatile
         private var instance: WeatherRepository? = null
-
         fun getInstance(weatherInfoDao: WeatherInfoDao) =
             instance ?: synchronized(this) {
                 instance ?: WeatherRepository(weatherInfoDao).also { instance = it }

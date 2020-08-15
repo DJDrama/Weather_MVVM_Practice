@@ -3,9 +3,12 @@ package com.dj.weather_mvvm.model
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.dj.weather_mvvm.db.Converters
 import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 
+@TypeConverters(Converters::class)
 @Parcelize
 data class Daily(
     @PrimaryKey
@@ -28,6 +31,7 @@ data class Daily(
     val pop: Double,
     val uvi: Double
 ) : Parcelable
+
 
 @Parcelize
 data class Temp(

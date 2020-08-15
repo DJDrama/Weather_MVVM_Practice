@@ -11,7 +11,7 @@ import retrofit2.http.Query
 
 private const val BASE_URL = "https://api.openweathermap.org/"
 
-private val moshi = Moshi.Builder()
+val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
     .build()
 

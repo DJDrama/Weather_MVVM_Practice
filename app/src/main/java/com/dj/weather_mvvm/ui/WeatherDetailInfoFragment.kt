@@ -11,7 +11,6 @@ import androidx.navigation.fragment.navArgs
 import com.dj.weather_mvvm.R
 import com.dj.weather_mvvm.databinding.FragmentWeatherDetailInfoBinding
 import com.dj.weather_mvvm.util.InjectorUtils
-
 class WeatherDetailInfoFragment : Fragment(R.layout.fragment_weather_detail_info){
 
     private val args: WeatherDetailInfoFragmentArgs by navArgs()
