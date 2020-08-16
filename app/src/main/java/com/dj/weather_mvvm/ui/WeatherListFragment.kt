@@ -1,25 +1,17 @@
 package com.dj.weather_mvvm.ui
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
-import android.location.LocationManager.GPS_PROVIDER
 import android.os.Bundle
 import android.os.Looper
-import android.provider.Settings
-import android.util.Log
 import android.view.View
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
@@ -27,14 +19,15 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import com.dj.weather_mvvm.R
 import com.dj.weather_mvvm.util.ConnectionLiveData
-import com.dj.weather_mvvm.util.InjectorUtils
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_weather_list.*
 
 
+@AndroidEntryPoint
 class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
     companion object {
         private const val REQUESTING_LOCATION_UPDATES_KEY = "REQUESTING_LOCATION_UPDATES_KEY"
@@ -46,9 +39,7 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
         private const val REQUEST_CHECK_SETTINGS = 1011
     }
 
-    private val viewModel: WeatherListViewModel by viewModels {
-        InjectorUtils.provideWeatherListViewModelFactory(this)
-    }
+    private val viewModel: WeatherListViewModel by viewModels()
     private lateinit var connectionLiveData: ConnectionLiveData
     private lateinit var weatherListAdapter: WeatherListAdapter
     private var mHasPermission: Boolean = false

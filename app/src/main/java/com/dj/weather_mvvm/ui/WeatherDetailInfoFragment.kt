@@ -10,13 +10,14 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.dj.weather_mvvm.R
 import com.dj.weather_mvvm.databinding.FragmentWeatherDetailInfoBinding
-import com.dj.weather_mvvm.util.InjectorUtils
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
 class WeatherDetailInfoFragment : Fragment(R.layout.fragment_weather_detail_info){
 
     private val args: WeatherDetailInfoFragmentArgs by navArgs()
-    private val weatherDetailInfoViewModel: WeatherDetailInfoViewModel by viewModels{
-        InjectorUtils.provideWeatherDetailInfoViewModelFactory(args.daily)
-    }
+    private val weatherDetailInfoViewModel: WeatherDetailInfoViewModel by viewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -32,6 +33,8 @@ class WeatherDetailInfoFragment : Fragment(R.layout.fragment_weather_detail_info
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        args.let{
+            weatherDetailInfoViewModel.setDailyData(it.daily)
+        }
     }
 }

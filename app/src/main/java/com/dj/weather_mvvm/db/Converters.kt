@@ -17,17 +17,24 @@
 package com.dj.weather_mvvm.db
 
 import androidx.room.TypeConverter
-import com.dj.weather_mvvm.api.moshi
 import com.dj.weather_mvvm.model.Daily
 import com.dj.weather_mvvm.model.FeelsLike
 import com.dj.weather_mvvm.model.Temp
 import com.dj.weather_mvvm.model.Weather
+import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import javax.inject.Inject
 
 /**
  * Type converters to allow Room to reference complex data types.
  */
 class Converters {
+    /** Need to find out how to inject moshi into this typeconverters class without creating a new moshi **/
+    private var moshi: Moshi = Moshi.Builder()
+        .add(KotlinJsonAdapterFactory())
+        .build()
+
     //Daily
     private val dailyType = Types.newParameterizedType(List::class.java, Daily::class.java)
     private val dailyAdapter = moshi.adapter<List<Daily>>(dailyType)

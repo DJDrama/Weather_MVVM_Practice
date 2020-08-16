@@ -5,7 +5,6 @@ import androidx.room.*
 import com.dj.weather_mvvm.db.Converters
 import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
-@TypeConverters(Converters::class)
 @Entity(tableName = "weather_info")
 data class WeatherInfo(
     val lat: String,

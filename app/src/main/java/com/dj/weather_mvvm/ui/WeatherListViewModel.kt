@@ -2,6 +2,7 @@ package com.dj.weather_mvvm.ui
 
 import android.location.Location
 import android.util.Log
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,8 +13,10 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class WeatherListViewModel internal constructor(
-    val weatherRepository: WeatherRepository
+class WeatherListViewModel
+@ViewModelInject
+constructor(
+    private val weatherRepository: WeatherRepository
 ) : ViewModel() {
 
     private val _weatherInfo = MutableLiveData<WeatherInfo>()

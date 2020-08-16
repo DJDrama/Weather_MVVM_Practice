@@ -8,7 +8,6 @@ import com.dj.weather_mvvm.db.Converters
 import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 
-@TypeConverters(Converters::class)
 @Parcelize
 data class Daily(
     @PrimaryKey
