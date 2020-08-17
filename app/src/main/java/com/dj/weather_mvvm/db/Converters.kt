@@ -24,7 +24,6 @@ import com.dj.weather_mvvm.model.Weather
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import javax.inject.Inject
 
 /**
  * Type converters to allow Room to reference complex data types.
