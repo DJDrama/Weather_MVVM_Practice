@@ -25,10 +25,10 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.navController
 
         //changing the start destination (in order to get rid of the back button at actionbar)
-        val inflater = navController.navInflater
-        val graph = inflater.inflate(R.navigation.nav_graph)
-        graph.startDestination = R.id.weatherListFragment
-        navController.graph = graph
+//        val inflater = navController.navInflater
+//        val graph = inflater.inflate(R.navigation.nav_graph)
+//        graph.startDestination = R.id.weatherListFragment
+//        navController.graph = graph
 
         appBarConfiguration = AppBarConfiguration(navGraph = navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)

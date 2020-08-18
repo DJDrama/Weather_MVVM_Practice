@@ -25,12 +25,33 @@ constructor(
 
     private val _isNetworkAvailable = MutableLiveData<Boolean>()
 
+    private val _setMyLocationClicked = MutableLiveData<Boolean>()
+    val setMyLocationClickedLiveData: LiveData<Boolean>
+        get() = _setMyLocationClicked
+
+    private val _location = MutableLiveData<Location>()
+    val location: LiveData<Location>
+        get() = _location
+
+
     init {
         _isNetworkAvailable.value = false
+        val location = Location("")
+        location.latitude = -1.0
+        location.longitude = -1.0
+        _location.value = location
+    }
+
+    fun setMyLocation(location: Location) {
+        _location.value = location
     }
 
     fun setNetworkAvailability(value: Boolean) {
         _isNetworkAvailable.value = value
+    }
+
+    fun setMyLocationClicked(value: Boolean) {
+        _setMyLocationClicked.value = value
     }
 
     fun fetchWeatherInfo(location: Location) {
@@ -50,7 +71,8 @@ constructor(
             withContext(IO) {
                 val weatherInfo = weatherRepository.getWeatherDataFromCache()
                 weatherInfo?.let {
-                    _weatherInfo.postValue(it)
+                    val action =
+                        _weatherInfo.postValue(it)
                 }
             }
         }

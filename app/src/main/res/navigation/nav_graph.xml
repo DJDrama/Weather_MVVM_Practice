@@ -3,18 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/splashFragment">
+    app:startDestination="@id/weatherListFragment">
 
-    <fragment
-        android:id="@+id/splashFragment"
-        android:name="com.dj.weather_mvvm.ui.SplashFragment"
-        tools:layout="@layout/fragment_splash">
-        <action
-            android:id="@+id/action_splashFragment_to_weatherListFragment"
-            app:destination="@id/weatherListFragment"
-            app:popUpTo="@id/splashFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
     <fragment
         android:id="@+id/weatherListFragment"
         android:name="com.dj.weather_mvvm.ui.WeatherListFragment"
@@ -27,14 +17,35 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_weatherListFragment_to_googleMapFragment"
+            app:destination="@id/googleMapFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/weatherDetailInfoFragment"
         android:name="com.dj.weather_mvvm.ui.WeatherDetailInfoFragment"
         android:label="@string/detail"
-        tools:layout="@layout/fragment_weather_detail_info" >
+        tools:layout="@layout/fragment_weather_detail_info">
         <argument
             android:name="daily"
             app:argType="com.dj.weather_mvvm.model.Daily" />
+    </fragment>
+    <fragment
+        android:id="@+id/googleMapFragment"
+        android:name="com.dj.weather_mvvm.ui.GoogleMapFragment"
+        android:label="GoogleMapFragment"
+        tools:layout="@layout/fragment_google_map">
+        <argument
+            android:name="latitude"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="longitude"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 </navigation>

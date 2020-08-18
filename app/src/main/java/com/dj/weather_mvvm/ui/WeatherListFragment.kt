@@ -8,6 +8,10 @@ import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
+import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -15,6 +19,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import com.dj.weather_mvvm.R
@@ -53,6 +59,7 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.show()
+        setHasOptionsMenu(true)
         connectionLiveData = ConnectionLiveData(this.requireContext())
         locationManager =
             this.context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -74,6 +81,10 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
                 locationResult ?: return
                 for (location in locationResult.locations) {
                     // Update UI with location data
+                    viewModel.setMyLocation(location)
+                    /**
+                     * TODO : Should fetch by observing location
+                     **/
                     fetchWeatherInfo(location)
                     stopLocationUpdates()
                     //just do once so break
@@ -97,6 +108,20 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_set_my_location, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_set_my_location -> {
+                viewModel.setMyLocationClicked(true)
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun getLastLocation() {
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
@@ -116,6 +141,10 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
         if (::fusedLocationProviderClient.isInitialized) {
             fusedLocationProviderClient.lastLocation.addOnSuccessListener { location: Location? ->
                 location?.let {
+                    viewModel.setMyLocation(it)
+                    /**
+                     * TODO : Should fetch by observing location
+                     **/
                     fetchWeatherInfo(it)
                 } ?: setLocationSettings()
             }
@@ -230,6 +259,17 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
         }
         connectionLiveData.observe(viewLifecycleOwner) {
             viewModel.setNetworkAvailability(it)
+        }
+        viewModel.setMyLocationClickedLiveData.observe(viewLifecycleOwner) {
+            if (it) {
+                val directions =
+                    WeatherListFragmentDirections.actionWeatherListFragmentToGoogleMapFragment(
+                        latitude = viewModel.location.value?.latitude.toString(),
+                        longitude = viewModel.location.value?.longitude.toString()
+                    )
+                findNavController().navigate(directions)
+                viewModel.setMyLocationClicked(false)
+            }
         }
     }
 
