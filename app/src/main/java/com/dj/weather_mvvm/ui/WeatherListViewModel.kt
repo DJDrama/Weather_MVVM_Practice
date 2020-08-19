@@ -29,17 +29,14 @@ constructor(
     val setMyLocationClickedLiveData: LiveData<Boolean>
         get() = _setMyLocationClicked
 
-    private val _location = MutableLiveData<Location>()
-    val location: LiveData<Location>
+    private val _location: MutableLiveData<Location> = MutableLiveData()
+    val location: MutableLiveData<Location>
         get() = _location
 
 
     init {
         _isNetworkAvailable.value = false
-        val location = Location("")
-        location.latitude = -1.0
-        location.longitude = -1.0
-        _location.value = location
+        _location.value = null
     }
 
     fun setMyLocation(location: Location) {

@@ -82,12 +82,9 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
                 for (location in locationResult.locations) {
                     // Update UI with location data
                     viewModel.setMyLocation(location)
-                    /**
-                     * TODO : Should fetch by observing location
-                     **/
-                    fetchWeatherInfo(location)
-                    stopLocationUpdates()
                     //just do once so break
+                    stopLocationUpdates()
+
                     break
                 }
             }
@@ -142,10 +139,6 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
             fusedLocationProviderClient.lastLocation.addOnSuccessListener { location: Location? ->
                 location?.let {
                     viewModel.setMyLocation(it)
-                    /**
-                     * TODO : Should fetch by observing location
-                     **/
-                    fetchWeatherInfo(it)
                 } ?: setLocationSettings()
             }
         }
@@ -178,7 +171,7 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
             // All location settings are satisfied. The client can initialize
             // location requests here.
             requestingLocationUpdates = true
-            startLocationUpdates()
+          //  startLocationUpdates()
         }
         task.addOnFailureListener { exception ->
             if (exception is ResolvableApiException) {
@@ -247,6 +240,16 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
     }
 
     private fun subscribeObservers() {
+        viewModel.location.observe(viewLifecycleOwner) { location ->
+            location?.let {
+                fetchWeatherInfo(location)
+            } ?: if (requestingLocationUpdates) {
+                startLocationUpdates()
+            } else {
+                setLocationSettings()
+            }
+
+        }
         viewModel.weatherInfo.observe(viewLifecycleOwner) { weatherInfo ->
             (activity as AppCompatActivity).supportActionBar?.title = weatherInfo.timeZone
             recycler_view.visibility = View.VISIBLE
@@ -264,8 +267,8 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
             if (it) {
                 val directions =
                     WeatherListFragmentDirections.actionWeatherListFragmentToGoogleMapFragment(
-                        latitude = viewModel.location.value?.latitude.toString(),
-                        longitude = viewModel.location.value?.longitude.toString()
+                        latitude = viewModel.location?.value?.latitude.toString(),
+                        longitude = viewModel.location?.value?.longitude.toString()
                     )
                 findNavController().navigate(directions)
                 viewModel.setMyLocationClicked(false)
@@ -275,11 +278,7 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
 
     override fun onResume() {
         super.onResume()
-        if (requestingLocationUpdates) {
-            startLocationUpdates()
-        } else {
-            setLocationSettings()
-        }
+
     }
 
     override fun onPause() {
