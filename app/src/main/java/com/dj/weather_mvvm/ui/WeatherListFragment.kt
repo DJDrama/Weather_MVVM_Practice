@@ -16,14 +16,15 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import com.dj.weather_mvvm.R
+import com.dj.weather_mvvm.model.Daily
 import com.dj.weather_mvvm.util.ConnectionLiveData
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
@@ -34,7 +35,7 @@ import kotlinx.android.synthetic.main.fragment_weather_list.*
 
 
 @AndroidEntryPoint
-class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
+class WeatherListFragment : Fragment(R.layout.fragment_weather_list), DailyItemClickListener {
     companion object {
         private const val REQUESTING_LOCATION_UPDATES_KEY = "REQUESTING_LOCATION_UPDATES_KEY"
         private const val REQUEST_CODE_PERMISSION = 101
@@ -45,7 +46,7 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
         private const val REQUEST_CHECK_SETTINGS = 1011
     }
 
-    private val viewModel: WeatherListViewModel by viewModels()
+    private val viewModel: WeatherSharedViewModel by activityViewModels()
     private lateinit var connectionLiveData: ConnectionLiveData
     private lateinit var weatherListAdapter: WeatherListAdapter
     private var mHasPermission: Boolean = false
@@ -63,17 +64,13 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
         connectionLiveData = ConnectionLiveData(this.requireContext())
         locationManager =
             this.context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        weatherListAdapter = WeatherListAdapter()
+        weatherListAdapter = WeatherListAdapter(this)
         recycler_view.apply {
             addItemDecoration(DividerItemDecoration(this.context, VERTICAL))
             adapter = weatherListAdapter
         }
         recycler_view.adapter = weatherListAdapter
         subscribeObservers()
-
-
-        //fetch data from Database First
-        viewModel.getWeatherDataFromDatabaseIfNotNull()
 
         requestPermissionsIfNecessary()
         locationCallback = object : LocationCallback() {
@@ -91,17 +88,16 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
         }
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(this.requireContext())
-        if (mHasPermission) {
-            getLastLocation()
-        }
         updateValuesFromBundle(savedInstanceState)
-
         swipe_refresh_layout.setOnRefreshListener {
             recycler_view.visibility = View.INVISIBLE
             progressBar.visibility = View.VISIBLE
             tv_desc.visibility = View.VISIBLE
             tv_desc.setText(R.string.fetching_location)
-            getLastLocation()
+            //getLastLocation()
+            /** setting to null so we can get new latitude and longitude and fetch new weatherInfo on refresh **/
+            viewModel.setLocation(null)
+
         }
     }
 
@@ -171,7 +167,7 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
             // All location settings are satisfied. The client can initialize
             // location requests here.
             requestingLocationUpdates = true
-          //  startLocationUpdates()
+            startLocationUpdates()
         }
         task.addOnFailureListener { exception ->
             if (exception is ResolvableApiException) {
@@ -215,8 +211,6 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
                     Snackbar.LENGTH_INDEFINITE
                 ).show()
             }
-        } else {
-            getLastLocation()
         }
     }
 
@@ -228,7 +222,16 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         // Check if permissions were granted after a permissions request flow.
         if (requestCode == REQUEST_CODE_PERMISSION) {
-            requestPermissionsIfNecessary() // no-op if permissions are granted already.
+            //just check index 0 since we have only 1 permission
+            if(grantResults[0] == PERMISSION_GRANTED){
+                getLastLocation()
+            }else{
+                Snackbar.make(
+                    coordinator_layout,
+                    R.string.set_permissions_in_settings,
+                    Snackbar.LENGTH_INDEFINITE
+                ).show()
+            }
         }
     }
 
@@ -274,11 +277,12 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
                 viewModel.setMyLocationClicked(false)
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
+        viewModel.isDailyItemClicked.observe(viewLifecycleOwner) {
+            if (it) {
+                findNavController().navigate(R.id.action_weatherListFragment_to_weatherDetailInfoFragment)
+                viewModel.setDailyItemClicked(false)
+            }
+        }
     }
 
     override fun onPause() {
@@ -307,5 +311,10 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list) {
         // ...
         // Update UI to match restored state
         //updateUI()
+    }
+
+    override fun onDailyItemClicked(dailyItem: Daily) {
+        viewModel.setDailyItem(dailyItem)
+        viewModel.setDailyItemClicked(true)
     }
 }

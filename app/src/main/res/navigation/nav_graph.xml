@@ -29,11 +29,7 @@
         android:id="@+id/weatherDetailInfoFragment"
         android:name="com.dj.weather_mvvm.ui.WeatherDetailInfoFragment"
         android:label="@string/detail"
-        tools:layout="@layout/fragment_weather_detail_info">
-        <argument
-            android:name="daily"
-            app:argType="com.dj.weather_mvvm.model.Daily" />
-    </fragment>
+        tools:layout="@layout/fragment_weather_detail_info"/>
     <fragment
         android:id="@+id/googleMapFragment"
         android:name="com.dj.weather_mvvm.ui.GoogleMapFragment"

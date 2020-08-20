@@ -7,18 +7,26 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.dj.weather_mvvm.R
 import com.dj.weather_mvvm.databinding.DailyWeatherViewItemBinding
 import com.dj.weather_mvvm.model.Daily
 
-class WeatherListAdapter :
+interface DailyItemClickListener{
+    fun onDailyItemClicked(dailyItem: Daily)
+}
+class WeatherListAdapter
+    constructor(
+        private val dailyItemClickListener: DailyItemClickListener?
+    ):
     ListAdapter<Daily, WeatherListAdapter.DailyWeatherViewHolder>(DiffCallback) {
 
-    class DailyWeatherViewHolder(private var binding: DailyWeatherViewItemBinding) :
+    class DailyWeatherViewHolder(private var binding: DailyWeatherViewItemBinding,
+                                 private val dailyItemClickListener: DailyItemClickListener?) :
         RecyclerView.ViewHolder(binding.root) {
         init {
             binding.setClickListener {
                 binding.dailyWeather?.let { daily ->
-                    navigateToDetail(daily, it)
+                    dailyItemClickListener?.onDailyItemClicked(daily)
                 }
             }
         }
@@ -31,15 +39,6 @@ class WeatherListAdapter :
                 executePendingBindings()
             }
         }
-
-        private fun navigateToDetail(daily: Daily, view: View) {
-            val directions =
-                WeatherListFragmentDirections.actionWeatherListFragmentToWeatherDetailInfoFragment(
-                    daily = daily
-                )
-            view.findNavController().navigate(directions)
-        }
-
     }
 
     companion object DiffCallback : DiffUtil.ItemCallback<Daily>() {
@@ -58,7 +57,8 @@ class WeatherListAdapter :
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            )
+            ),
+            dailyItemClickListener
         )
     }
 

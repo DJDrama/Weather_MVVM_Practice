@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.findNavController
@@ -25,49 +26,39 @@ import kotlinx.android.synthetic.main.fragment_google_map.*
 
 class GoogleMapFragment : Fragment(R.layout.fragment_google_map),
     com.google.android.libraries.maps.OnMapReadyCallback {
-
     companion object {
         const val ZOOM_LEVEL = 13f
     }
-
-    private val viewModel: GoogleMapFragmentViewModel by viewModels()
-    private val args: GoogleMapFragmentArgs? by navArgs()
-    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-
+    private val viewModel: WeatherSharedViewModel by activityViewModels()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         map.onCreate(savedInstanceState)
         map.getMapAsync(this)
-        fusedLocationProviderClient =
-            LocationServices.getFusedLocationProviderClient(this.requireContext())
         subscribeObservers()
-        args?.let {
-            val location = Location("")
-            location.latitude = it.latitude?.toDouble()!!
-            location.longitude = it.longitude?.toDouble()!!
-            viewModel.setLocation(location)
-        }
         btn_set_current_location.setOnClickListener {
-            findNavController().navigateUp()
+            viewModel.getGoogleMap()?.let {
+                it.cameraPosition.target.run {
+                    val location = Location("")
+                    location.latitude = latitude
+                    location.longitude = longitude
+                    viewModel.setLocation(location)
+                    findNavController().navigateUp()
+                }
+            }
         }
     }
 
     @SuppressLint("MissingPermission")
     override fun onMapReady(p0: GoogleMap?) {
         p0?.let {
-            it.isMyLocationEnabled = true
-            it.uiSettings.isMyLocationButtonEnabled = true
-            it.setOnMyLocationButtonClickListener {
-                getMyCurrentLocation()
-                true
-            }
             it.setOnCameraMoveListener {
                 btn_set_current_location.text = resources.getString(R.string.camera_moving)
                 btn_set_current_location.isEnabled = false
             }
             it.setOnCameraIdleListener {
-                btn_set_current_location.text = resources.getString(R.string.set_current_location_text)
-                btn_set_current_location.isEnabled=true
+                btn_set_current_location.text =
+                    resources.getString(R.string.set_current_location_text)
+                btn_set_current_location.isEnabled = true
             }
             viewModel.setMapReady(true)
             viewModel.setGoogleMap(it)
@@ -97,29 +88,6 @@ class GoogleMapFragment : Fragment(R.layout.fragment_google_map),
                         }
                     }
                 }
-            }
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun getMyCurrentLocation() {
-        val locationResult = fusedLocationProviderClient.lastLocation
-        locationResult.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                task.result.also { locationResult ->
-                    locationResult?.let {
-                        val location = Location("")
-                        location.latitude = it.latitude
-                        location.longitude = it.longitude
-                        viewModel.setLocation(location)
-                    }
-                }
-            } else {
-                Toast.makeText(
-                    this.requireContext(),
-                    resources.getString(R.string.fetch_location_failed),
-                    Toast.LENGTH_SHORT
-                ).show()
             }
         }
     }

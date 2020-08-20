@@ -6,8 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.navArgs
+import androidx.fragment.app.activityViewModels
 import com.dj.weather_mvvm.R
 import com.dj.weather_mvvm.databinding.FragmentWeatherDetailInfoBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,9 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class WeatherDetailInfoFragment : Fragment(R.layout.fragment_weather_detail_info){
 
-    private val args: WeatherDetailInfoFragmentArgs by navArgs()
-    private val weatherDetailInfoViewModel: WeatherDetailInfoViewModel by viewModels()
-
+    private val sharedViewModel: WeatherSharedViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -27,14 +24,8 @@ class WeatherDetailInfoFragment : Fragment(R.layout.fragment_weather_detail_info
             inflater, R.layout.fragment_weather_detail_info, container, false
         )
         binding.apply{
-            viewModel = weatherDetailInfoViewModel
+            viewModel = sharedViewModel
         }
         return binding.root
-    }
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        args.let{
-            weatherDetailInfoViewModel.setDailyData(it.daily)
-        }
     }
 }
