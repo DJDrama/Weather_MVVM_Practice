@@ -99,4 +99,7 @@ dependencies {
     // When using Kotlin.
     kapt "androidx.hilt:hilt-compiler:$hilt_lifecycle_version"
 
+    // -- Leak Canary
+    def leak_canary_version = "2.4"
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leak_canary_version"
 }

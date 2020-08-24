@@ -3,23 +3,14 @@ package com.dj.weather_mvvm.ui
 import android.annotation.SuppressLint
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
-import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.dj.weather_mvvm.R
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.maps.CameraUpdateFactory
 import com.google.android.libraries.maps.GoogleMap
-import com.google.android.libraries.maps.SupportMapFragment
 import com.google.android.libraries.maps.model.LatLng
 import com.google.android.libraries.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.fragment_google_map.*
@@ -90,5 +81,11 @@ class GoogleMapFragment : Fragment(R.layout.fragment_google_map),
                 }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        viewModel.getGoogleMap()?.clear()
+        map.onDestroy()
+        super.onDestroyView()
     }
 }
