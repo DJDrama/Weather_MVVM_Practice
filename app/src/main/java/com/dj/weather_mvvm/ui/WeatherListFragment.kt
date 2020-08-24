@@ -296,7 +296,11 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list), DailyItemC
     override fun onPause() {
         super.onPause()
         stopLocationUpdates()
+    }
 
+    override fun onDestroyView() {
+        recycler_view.adapter = null
+        super.onDestroyView()
     }
 
     private fun stopLocationUpdates() {

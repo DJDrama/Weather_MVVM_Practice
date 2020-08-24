@@ -1,18 +1,17 @@
 package com.dj.weather_mvvm.db
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.dj.weather_mvvm.model.WeatherInfo
 
 @Dao
 interface WeatherInfoDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(weatherInfo: WeatherInfo)
 
     @Query("SELECT * FROM weather_info")
     suspend fun getWeatherInfo(): WeatherInfo
 
+    @Query("DELETE FROM weather_info")
+    suspend fun deleteAll()
 }

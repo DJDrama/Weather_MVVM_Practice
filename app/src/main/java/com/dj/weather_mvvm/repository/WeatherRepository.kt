@@ -29,6 +29,10 @@ class WeatherRepository constructor(
         )
     }
 
+    suspend fun deleteAllWeatherData(){
+        weatherInfoDao.deleteAll()
+    }
+
     suspend fun insertWeatherData(weatherData: WeatherInfo) {
         weatherInfoDao.insert(weatherData)
     }

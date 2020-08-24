@@ -10,6 +10,7 @@ import com.dj.weather_mvvm.model.WeatherInfo
 import com.dj.weather_mvvm.repository.WeatherRepository
 import com.google.android.libraries.maps.GoogleMap
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -82,6 +83,7 @@ constructor(
                 location.latitude,
                 location.longitude
             )
+            weatherRepository.deleteAllWeatherData()
             weatherRepository.insertWeatherData(weatherInfo)
             _weatherInfo.postValue(weatherInfo)
         }
