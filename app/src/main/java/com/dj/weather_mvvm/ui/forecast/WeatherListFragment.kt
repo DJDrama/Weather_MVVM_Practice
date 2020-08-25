@@ -1,4 +1,4 @@
-package com.dj.weather_mvvm.ui
+package com.dj.weather_mvvm.ui.forecast
 
 import android.Manifest
 import android.content.Context
@@ -26,6 +26,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import com.dj.weather_mvvm.R
 import com.dj.weather_mvvm.model.Daily
+import com.dj.weather_mvvm.ui.DailyItemClickListener
+import com.dj.weather_mvvm.ui.WeatherListAdapter
+import com.dj.weather_mvvm.ui.WeatherSharedViewModel
 import com.dj.weather_mvvm.util.ConnectionLiveData
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
