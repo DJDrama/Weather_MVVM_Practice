@@ -34,9 +34,16 @@
     <string name="fetching_location" >Fetching Your Location~!</string>
     <string name="fetching_weather_info" >Fetching Weather Info~!</string>
     <string name="google_map_api_key">should get from Google Api Console!</string>
+    
     <string name="set_my_location">Set My Location</string>
     <string name="set_current_location_text">Set Current Location</string>
     <string name="fetch_location_failed">Failed to get your current Location</string>
     <string name="camera_moving">Moving Map</string>
+    <string name="cd_today_weather">Today\'s Weather</string>
+    <string name="title_today_weather">Today\'s Weather</string>
+    <string name="cd_weather_list">Forecast</string>
+    <string name="weather_list">Forecast</string>
+    <string name="cd_more">More</string>
+    <string name="title_more">More</string>
 
 </resources>
