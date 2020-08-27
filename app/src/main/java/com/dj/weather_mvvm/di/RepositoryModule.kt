@@ -1,6 +1,7 @@
 package com.dj.weather_mvvm.di
 
 import com.dj.weather_mvvm.api.ApiService
+import com.dj.weather_mvvm.db.LocationLatLngDao
 import com.dj.weather_mvvm.db.WeatherInfoDao
 import com.dj.weather_mvvm.repository.WeatherRepository
 import dagger.Module
@@ -17,8 +18,9 @@ object RepositoryModule {
     @Provides
     fun provideWeatherRepository(
         weatherInfoDao: WeatherInfoDao,
+        locationLatLngDao: LocationLatLngDao,
         retrofit: ApiService
     ): WeatherRepository{
-        return WeatherRepository(weatherInfoDao, retrofit)
+        return WeatherRepository(weatherInfoDao, locationLatLngDao, retrofit)
     }
 }

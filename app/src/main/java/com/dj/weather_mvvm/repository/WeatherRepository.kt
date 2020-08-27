@@ -1,12 +1,14 @@
 package com.dj.weather_mvvm.repository
 
 import com.dj.weather_mvvm.api.ApiService
+import com.dj.weather_mvvm.db.LocationLatLngDao
 import com.dj.weather_mvvm.db.WeatherInfoDao
+import com.dj.weather_mvvm.model.LocationLatLng
 import com.dj.weather_mvvm.model.WeatherInfo
-import retrofit2.Retrofit
 
 class WeatherRepository constructor(
     private val weatherInfoDao: WeatherInfoDao,
+    private val locationLatLngDao: LocationLatLngDao,
     private val retrofit: ApiService
 ) {
     /*
@@ -20,6 +22,11 @@ class WeatherRepository constructor(
              }
      }
  */
+
+    /** LocationLatLngDao **/
+    suspend fun getLocationLatLng(): LocationLatLng{
+        return locationLatLngDao.getLatestLatLng()
+    }
 
     // SEOUL, KOREA Latitude, Longitude
     suspend fun getWeatherDataFromApi(lat: Double, long: Double): WeatherInfo {

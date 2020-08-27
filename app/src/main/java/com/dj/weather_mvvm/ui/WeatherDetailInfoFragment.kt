@@ -20,7 +20,8 @@ class WeatherDetailInfoFragment : Fragment(R.layout.fragment_weather_detail_info
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = DataBindingUtil.inflate<FragmentWeatherDetailInfoBinding>(
+        val binding =
+            DataBindingUtil.inflate<FragmentWeatherDetailInfoBinding>(
             inflater, R.layout.fragment_weather_detail_info, container, false
         )
         binding.apply{
