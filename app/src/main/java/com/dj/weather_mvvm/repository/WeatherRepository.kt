@@ -27,6 +27,9 @@ class WeatherRepository constructor(
     suspend fun getLocationLatLng(): LocationLatLng{
         return locationLatLngDao.getLatestLatLng()
     }
+    suspend fun insertLocationData(locationLatLng: LocationLatLng) : Long{
+        return locationLatLngDao.insert(locationLatLng)
+    }
 
     // SEOUL, KOREA Latitude, Longitude
     suspend fun getWeatherDataFromApi(lat: Double, long: Double): WeatherInfo {

@@ -9,9 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.dj.weather_mvvm.R
 import com.dj.weather_mvvm.databinding.FragmentTodayBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class TodayFragment : Fragment() {
     private val todayViewModel: TodayViewModel by viewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

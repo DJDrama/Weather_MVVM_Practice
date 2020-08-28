@@ -8,7 +8,7 @@ import com.dj.weather_mvvm.model.WeatherInfo
 interface LocationLatLngDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(locationLatLng: LocationLatLng)
+    suspend fun insert(locationLatLng: LocationLatLng) : Long
 
     @Query("SELECT * FROM location_lat_lng ORDER BY id DESC LIMIT 1")
     suspend fun getLatestLatLng(): LocationLatLng

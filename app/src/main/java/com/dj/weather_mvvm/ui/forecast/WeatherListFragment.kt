@@ -1,23 +1,11 @@
 package com.dj.weather_mvvm.ui.forecast
 
-import android.Manifest
-import android.content.Context
-import android.content.IntentSender
-import android.content.pm.PackageManager
-import android.location.Location
-import android.location.LocationManager
 import android.os.Bundle
-import android.os.Looper
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
@@ -30,10 +18,6 @@ import com.dj.weather_mvvm.ui.DailyItemClickListener
 import com.dj.weather_mvvm.ui.WeatherListAdapter
 import com.dj.weather_mvvm.ui.WeatherSharedViewModel
 import com.dj.weather_mvvm.util.ConnectionLiveData
-import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.*
-import com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_weather_list.*
 
@@ -86,28 +70,7 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list), DailyItemC
         return super.onOptionsItemSelected(item)
     }
 
-
-//
-//    private fun fetchWeatherInfo(location: Location) {
-//        tv_desc.setText(R.string.fetching_weather_info)
-//        viewModel.fetchWeatherInfo(location)
-//    }
-//
-
-
-
-
-
     private fun subscribeObservers() {
-        viewModel.location.observe(viewLifecycleOwner) { location ->
-            location?.let {
-                fetchWeatherInfo(location)
-            } ?: if (requestingLocationUpdates) {
-                startLocationUpdates()
-            } else {
-                setLocationSettings()
-            }
-        }
         viewModel.weatherInfo.observe(viewLifecycleOwner) { weatherInfo ->
             (activity as AppCompatActivity).supportActionBar?.title = weatherInfo.timeZone
             recycler_view.visibility = View.VISIBLE

@@ -1,6 +1,7 @@
 package com.dj.weather_mvvm.ui.today
 
 import android.location.Location
+import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

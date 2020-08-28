@@ -76,18 +76,7 @@ constructor(
         _setMyLocationClicked.value = value
     }
 
-    fun fetchWeatherInfo(location: Location) {
-        if (!_isNetworkAvailable.value!!) return
-        viewModelScope.launch(IO) {
-            val weatherInfo = weatherRepository.getWeatherDataFromApi(
-                location.latitude,
-                location.longitude
-            )
-            weatherRepository.deleteAllWeatherData()
-            weatherRepository.insertWeatherData(weatherInfo)
-            _weatherInfo.postValue(weatherInfo)
-        }
-    }
+
 
     fun getWeatherDataFromDatabaseIfNotNull() {
         viewModelScope.launch {

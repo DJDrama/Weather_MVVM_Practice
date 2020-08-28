@@ -8,7 +8,7 @@ import kotlinx.android.parcel.Parcelize
 @Entity(tableName = "location_lat_lng")
 data class LocationLatLng(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Int=0,
     val lat: String,
     val lon: String,
 )

@@ -2,6 +2,7 @@ package com.dj.weather_mvvm.ui.intro
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.Location
@@ -16,18 +17,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
-import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.observe
 import com.dj.weather_mvvm.R
-import com.dj.weather_mvvm.databinding.ActivityIntroSplashBinding
+import com.dj.weather_mvvm.ui.MainActivity
+import com.dj.weather_mvvm.util.ConnectionLiveData
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_weather_list.*
+import kotlinx.android.synthetic.main.activity_intro_splash.*
 
+@Suppress("COMPATIBILITY_WARNING")
 @AndroidEntryPoint
 class IntroSplashActivity : AppCompatActivity() {
-    companion object{
+    companion object {
         private const val REQUESTING_LOCATION_UPDATES_KEY = "REQUESTING_LOCATION_UPDATES_KEY"
         private const val REQUEST_CODE_PERMISSION = 101
         private const val locationPermission = Manifest.permission.ACCESS_FINE_LOCATION
@@ -37,6 +40,7 @@ class IntroSplashActivity : AppCompatActivity() {
         private const val REQUEST_CHECK_SETTINGS = 1011
 
     }
+
     private var mHasPermission: Boolean = false
     private var mPermissionRequestCount: Int = 0
     private lateinit var locationManager: LocationManager
@@ -44,26 +48,30 @@ class IntroSplashActivity : AppCompatActivity() {
     private lateinit var mLocationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
     private var requestingLocationUpdates = false
+
+    private lateinit var connectionLiveData: ConnectionLiveData
     private val introSplashViewModel: IntroSplashViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = DataBindingUtil.setContentView<ActivityIntroSplashBinding>(
-            this,
-            R.layout.activity_intro_splash
-        )
-        binding.apply {
-            viewModel = introSplashViewModel
+        supportActionBar?.hide()
+        connectionLiveData = ConnectionLiveData(this)
+
+        connectionLiveData.observe(this) {
+            introSplashViewModel.setNetworkAvailability(it)
         }
+        setContentView(R.layout.activity_intro_splash)
+
         locationManager =
             this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
         requestPermissionsIfNecessary()
+
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult?) {
                 locationResult ?: return
                 for (location in locationResult.locations) {
                     // Update UI with location data
-                    viewModel.setMyLocation(location)
+                    introSplashViewModel.setMyLocation(location)
                     //just do once so break
                     stopLocationUpdates()
 
@@ -73,14 +81,28 @@ class IntroSplashActivity : AppCompatActivity() {
         }
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(this)
+
         updateValuesFromBundle(savedInstanceState)
+
+        introSplashViewModel.location.observe(this) {
+            it?.let {
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            } ?:  if (requestingLocationUpdates) {
+                startLocationUpdates()
+            } else {
+                setLocationSettings()
+            }
+        }
     }
-    private fun requestPermissionsIfNecessary(){
+
+    private fun requestPermissionsIfNecessary() {
         mHasPermission = checkPermission()
         if (!mHasPermission) {
             if (mPermissionRequestCount < MAX_NUMBER_REQUEST_PERMISSIONS) {
                 mPermissionRequestCount++
-                requestPermissions(arrayOf(locationPermission),
+                requestPermissions(
+                    arrayOf(locationPermission),
                     REQUEST_CODE_PERMISSION
                 )
             } else {
@@ -92,12 +114,14 @@ class IntroSplashActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun checkPermission(): Boolean {
         return ContextCompat.checkSelfPermission(
             this,
             locationPermission
         ) == PackageManager.PERMISSION_GRANTED
     }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
@@ -107,9 +131,9 @@ class IntroSplashActivity : AppCompatActivity() {
         // Check if permissions were granted after a permissions request flow.
         if (requestCode == REQUEST_CODE_PERMISSION) {
             //just check index 0 since we have only 1 permission
-            if(grantResults[0] == PermissionChecker.PERMISSION_GRANTED){
+            if (grantResults[0] == PermissionChecker.PERMISSION_GRANTED) {
                 getLastLocation()
-            }else{
+            } else {
                 Snackbar.make(
                     coordinator_layout,
                     R.string.set_permissions_in_settings,
@@ -118,6 +142,7 @@ class IntroSplashActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun getLastLocation() {
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -137,11 +162,12 @@ class IntroSplashActivity : AppCompatActivity() {
         if (::fusedLocationProviderClient.isInitialized) {
             fusedLocationProviderClient.lastLocation.addOnSuccessListener { location: Location? ->
                 location?.let {
-                    viewModel.setMyLocation(it)
+                    introSplashViewModel.setMyLocation(it)
                 } ?: setLocationSettings()
             }
         }
     }
+
     private fun setLocationSettings() {
         // Create the location request to start receiving updates
         // https://developer.android.com/training/location/change-location-settings
@@ -181,12 +207,8 @@ class IntroSplashActivity : AppCompatActivity() {
                     Log.e("Error", "SendIntentException:  $sendEx")
 
                 }
-            }else{
+            } else {
                 Toast.makeText(this, "$exception", Toast.LENGTH_SHORT).show()
-                recycler_view.visibility = View.VISIBLE
-                progressBar.visibility = View.GONE
-                tv_desc.visibility = View.GONE
-                swipe_refresh_layout.isRefreshing = false
             }
         }
     }
@@ -205,13 +227,16 @@ class IntroSplashActivity : AppCompatActivity() {
         super.onPause()
         stopLocationUpdates()
     }
+
     private fun stopLocationUpdates() {
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
     }
+
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, requestingLocationUpdates)
         super.onSaveInstanceState(outState)
     }
+
     private fun updateValuesFromBundle(savedInstanceState: Bundle?) {
         savedInstanceState ?: return
         // Update the value of requestingLocationUpdates from the Bundle.
