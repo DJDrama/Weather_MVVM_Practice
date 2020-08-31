@@ -1,4 +1,4 @@
-package com.dj.weather_mvvm.ui.main
+package com.dj.weather_mvvm.ui.main.more
 
 import android.annotation.SuppressLint
 import android.location.Location
@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.dj.weather_mvvm.R
+import com.dj.weather_mvvm.ui.main.WeatherSharedViewModel
 import com.google.android.libraries.maps.CameraUpdateFactory
 import com.google.android.libraries.maps.GoogleMap
 import com.google.android.libraries.maps.model.LatLng

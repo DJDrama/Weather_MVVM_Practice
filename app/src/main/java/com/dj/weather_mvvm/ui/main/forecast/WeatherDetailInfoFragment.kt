@@ -1,4 +1,4 @@
-package com.dj.weather_mvvm.ui.main
+package com.dj.weather_mvvm.ui.main.forecast
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.dj.weather_mvvm.R
 import com.dj.weather_mvvm.databinding.FragmentWeatherDetailInfoBinding
+import com.dj.weather_mvvm.ui.main.WeatherSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

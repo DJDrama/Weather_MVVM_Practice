@@ -49,17 +49,4 @@ constructor(
             }
         }
     }
-//
-//    fun fetchWeatherInfo(location: Location) {
-//        if (!_isNetworkAvailable.value!!) return
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val weatherInfo = weatherRepository.getWeatherDataFromApi(
-//                location.latitude,
-//                location.longitude
-//            )
-//            weatherRepository.deleteAllWeatherData()
-//            weatherRepository.insertWeatherData(weatherInfo)
-//            _weatherInfo.postValue(weatherInfo)
-//        }
-//    }
 }

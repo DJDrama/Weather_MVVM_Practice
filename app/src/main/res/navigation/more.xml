@@ -6,5 +6,13 @@
     <fragment
         android:id="@+id/moreFragment"
         android:name="com.dj.weather_mvvm.ui.main.more.MoreFragment"
-        android:label="MoreFragment" />
+        android:label="MoreFragment" >
+        <action
+            android:id="@+id/action_moreFragment_to_googleMapFragment2"
+            app:destination="@id/googleMapFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/googleMapFragment2"
+        android:name="com.dj.weather_mvvm.ui.main.more.GoogleMapFragment"
+        android:label="GoogleMapFragment" />
 </navigation>

@@ -1,4 +1,4 @@
-package com.dj.weather_mvvm.ui.main
+package com.dj.weather_mvvm.ui.main.forecast
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

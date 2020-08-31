@@ -17,31 +17,10 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
-        <action
-            android:id="@+id/action_weatherListFragment_to_googleMapFragment"
-            app:destination="@id/googleMapFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/weatherDetailInfoFragment"
-        android:name="com.dj.weather_mvvm.ui.main.WeatherDetailInfoFragment"
+        android:name="com.dj.weather_mvvm.ui.main.forecast.WeatherDetailInfoFragment"
         android:label="@string/detail"
         tools:layout="@layout/fragment_weather_detail_info"/>
-    <fragment
-        android:id="@+id/googleMapFragment"
-        android:name="com.dj.weather_mvvm.ui.main.GoogleMapFragment"
-        android:label="GoogleMapFragment"
-        tools:layout="@layout/fragment_google_map">
-        <argument
-            android:name="latitude"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
-            android:name="longitude"
-            app:argType="string"
-            app:nullable="true" />
-    </fragment>
 </navigation>

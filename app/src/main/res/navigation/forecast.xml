@@ -26,12 +26,12 @@
     </fragment>
     <fragment
         android:id="@+id/weatherDetailInfoFragment"
-        android:name="com.dj.weather_mvvm.ui.main.WeatherDetailInfoFragment"
+        android:name="com.dj.weather_mvvm.ui.main.forecast.WeatherDetailInfoFragment"
         tools:layout="@layout/fragment_weather_detail_info"
         android:label="@string/detail" />
     <fragment
         android:id="@+id/googleMapFragment"
-        android:name="com.dj.weather_mvvm.ui.main.GoogleMapFragment"
+        android:name="com.dj.weather_mvvm.ui.main.more.GoogleMapFragment"
         tools:layout="@layout/fragment_google_map"
         android:label="GoogleMapFragment">
         <argument

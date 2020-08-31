@@ -49,7 +49,9 @@ class IntroSplashActivity : AppCompatActivity() {
     private var requestingLocationUpdates = false
 
     private lateinit var connectionLiveData: ConnectionLiveData
+
     private val introSplashViewModel: IntroSplashViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
