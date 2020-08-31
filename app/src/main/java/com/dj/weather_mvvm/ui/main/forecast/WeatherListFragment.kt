@@ -1,4 +1,4 @@
-package com.dj.weather_mvvm.ui.forecast
+package com.dj.weather_mvvm.ui.main.forecast
 
 import android.os.Bundle
 import android.view.Menu
@@ -14,9 +14,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import com.dj.weather_mvvm.R
 import com.dj.weather_mvvm.model.Daily
-import com.dj.weather_mvvm.ui.DailyItemClickListener
-import com.dj.weather_mvvm.ui.WeatherListAdapter
-import com.dj.weather_mvvm.ui.WeatherSharedViewModel
+import com.dj.weather_mvvm.ui.main.DailyItemClickListener
+import com.dj.weather_mvvm.ui.main.WeatherListAdapter
+import com.dj.weather_mvvm.ui.main.WeatherSharedViewModel
 import com.dj.weather_mvvm.util.ConnectionLiveData
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_weather_list.*

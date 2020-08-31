@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.dj.weather_mvvm.ui
+package com.dj.weather_mvvm.ui.main
 
 import android.content.Intent
 import android.util.SparseArray

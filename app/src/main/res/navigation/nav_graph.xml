@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/weatherListFragment"
-        android:name="com.dj.weather_mvvm.ui.forecast.WeatherListFragment"
+        android:name="com.dj.weather_mvvm.ui.main.forecast.WeatherListFragment"
         android:label="@string/text_weather_list"
         tools:layout="@layout/fragment_weather_list">
         <action
@@ -27,12 +27,12 @@
     </fragment>
     <fragment
         android:id="@+id/weatherDetailInfoFragment"
-        android:name="com.dj.weather_mvvm.ui.WeatherDetailInfoFragment"
+        android:name="com.dj.weather_mvvm.ui.main.WeatherDetailInfoFragment"
         android:label="@string/detail"
         tools:layout="@layout/fragment_weather_detail_info"/>
     <fragment
         android:id="@+id/googleMapFragment"
-        android:name="com.dj.weather_mvvm.ui.GoogleMapFragment"
+        android:name="com.dj.weather_mvvm.ui.main.GoogleMapFragment"
         android:label="GoogleMapFragment"
         tools:layout="@layout/fragment_google_map">
         <argument

@@ -10,7 +10,6 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -19,7 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import androidx.lifecycle.observe
 import com.dj.weather_mvvm.R
-import com.dj.weather_mvvm.ui.MainActivity
+import com.dj.weather_mvvm.ui.main.MainActivity
 import com.dj.weather_mvvm.util.ConnectionLiveData
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*

@@ -5,7 +5,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.dj.weather_mvvm.ui.today.TodayViewModel" />
+            type="com.dj.weather_mvvm.ui.main.today.TodayViewModel" />
     </data>
 
     <ScrollView

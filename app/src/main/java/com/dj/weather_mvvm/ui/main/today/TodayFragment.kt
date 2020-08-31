@@ -1,4 +1,4 @@
-package com.dj.weather_mvvm.ui.today
+package com.dj.weather_mvvm.ui.main.today
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,7 +14,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class TodayFragment : Fragment() {
     private val todayViewModel: TodayViewModel by viewModels()
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

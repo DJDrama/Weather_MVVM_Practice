@@ -5,6 +5,6 @@
 
     <fragment
         android:id="@+id/todayFragment"
-        android:name="com.dj.weather_mvvm.ui.today.TodayFragment"
+        android:name="com.dj.weather_mvvm.ui.main.today.TodayFragment"
         android:label="TodayFragment" />
 </navigation>

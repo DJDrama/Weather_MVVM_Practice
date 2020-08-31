@@ -1,4 +1,4 @@
-package com.dj.weather_mvvm.ui
+package com.dj.weather_mvvm.ui.main
 
 import android.annotation.SuppressLint
 import android.location.Location

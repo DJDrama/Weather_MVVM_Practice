@@ -1,7 +1,6 @@
-package com.dj.weather_mvvm.ui
+package com.dj.weather_mvvm.ui.main
 
 import android.location.Location
-import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.dj.weather_mvvm.model.Daily
@@ -10,7 +9,6 @@ import com.dj.weather_mvvm.model.WeatherInfo
 import com.dj.weather_mvvm.repository.WeatherRepository
 import com.google.android.libraries.maps.GoogleMap
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 

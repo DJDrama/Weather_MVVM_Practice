@@ -1,6 +1,5 @@
-package com.dj.weather_mvvm.ui.today
+package com.dj.weather_mvvm.ui.main.today
 
-import android.location.Location
 import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
@@ -48,6 +47,9 @@ constructor(
             )
             weatherRepository.deleteAllWeatherData()
             weatherRepository.insertWeatherData(weatherInfo)
+
+            // Zero index --> Today
+            _dailyItem.postValue(weatherInfo.dailyList[0])
         }
     }
 }

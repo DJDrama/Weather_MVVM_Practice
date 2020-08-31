@@ -1,4 +1,4 @@
-package com.dj.weather_mvvm.ui
+package com.dj.weather_mvvm.ui.main
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -1,13 +1,10 @@
-package com.dj.weather_mvvm.ui
+package com.dj.weather_mvvm.ui.main
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.dj.weather_mvvm.R
 import com.dj.weather_mvvm.databinding.DailyWeatherViewItemBinding
 import com.dj.weather_mvvm.model.Daily
 

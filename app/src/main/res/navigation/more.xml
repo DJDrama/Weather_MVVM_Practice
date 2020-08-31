@@ -5,6 +5,6 @@
 
     <fragment
         android:id="@+id/moreFragment"
-        android:name="com.dj.weather_mvvm.ui.more.MoreFragment"
+        android:name="com.dj.weather_mvvm.ui.main.more.MoreFragment"
         android:label="MoreFragment" />
 </navigation>
