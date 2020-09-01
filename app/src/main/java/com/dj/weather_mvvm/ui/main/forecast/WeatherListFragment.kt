@@ -1,12 +1,14 @@
 package com.dj.weather_mvvm.ui.main.forecast
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import com.dj.weather_mvvm.R
@@ -20,7 +22,8 @@ import kotlinx.android.synthetic.main.fragment_weather_list.*
 @AndroidEntryPoint
 class WeatherListFragment : Fragment(R.layout.fragment_weather_list), DailyItemClickListener {
 
-    private val viewModel: WeatherListViewModel by viewModels()
+    private val viewModel: ForeCastViewModel by activityViewModels()
+
     private lateinit var connectionLiveData: ConnectionLiveData
     private lateinit var weatherListAdapter: WeatherListAdapter
 
@@ -46,7 +49,6 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list), DailyItemC
         }
     }
 
-
     private fun subscribeObservers() {
         viewModel.weatherInfo.observe(viewLifecycleOwner) { weatherInfo ->
             (activity as AppCompatActivity).supportActionBar?.title = weatherInfo.timeZone
@@ -63,17 +65,6 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list), DailyItemC
             viewModel.setNetworkAvailability(it)
         }
 
-//        viewModel.setMyLocationClickedLiveData.observe(viewLifecycleOwner) {
-//            if (it) {
-//                val directions =
-//                    WeatherListFragmentDirections.actionWeatherListFragmentToGoogleMapFragment(
-//                        latitude = viewModel.location?.value?.latitude.toString(),
-//                        longitude = viewModel.location?.value?.longitude.toString()
-//                    )
-//                findNavController().navigate(directions)
-//                viewModel.setMyLocationClicked(false)
-//            }
-//        }
         viewModel.isDailyItemClicked.observe(viewLifecycleOwner) {
             if (it) {
                 findNavController().navigate(R.id.action_weatherListFragment_to_weatherDetailInfoFragment)
@@ -82,15 +73,13 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list), DailyItemC
         }
     }
 
-
     override fun onDestroyView() {
         recycler_view.adapter = null
         super.onDestroyView()
     }
 
-
     override fun onDailyItemClicked(dailyItem: Daily) {
-       // viewModel.setDailyItem(dailyItem)
+        viewModel.setDailyItem(dailyItem)
         viewModel.setDailyItemClicked(true)
     }
 }

@@ -6,7 +6,7 @@
         <!--   <import type="com.google.samples.apps.sunflower.data.Plant"/>-->
         <variable
             name="viewModel"
-            type="com.dj.weather_mvvm.ui.main.WeatherSharedViewModel" />
+            type="com.dj.weather_mvvm.ui.main.forecast.ForeCastViewModel" />
     </data>
 
     <ScrollView

@@ -1,21 +1,23 @@
 package com.dj.weather_mvvm.ui.main.forecast
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.navGraphViewModels
 import com.dj.weather_mvvm.R
 import com.dj.weather_mvvm.databinding.FragmentWeatherDetailInfoBinding
-import com.dj.weather_mvvm.ui.main.WeatherSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class WeatherDetailInfoFragment : Fragment(R.layout.fragment_weather_detail_info){
+class WeatherDetailInfoFragment : Fragment(R.layout.fragment_weather_detail_info) {
 
-    private val sharedViewModel: WeatherSharedViewModel by activityViewModels()
+    private val forecastViewModel: ForeCastViewModel by activityViewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -23,11 +25,14 @@ class WeatherDetailInfoFragment : Fragment(R.layout.fragment_weather_detail_info
     ): View? {
         val binding =
             DataBindingUtil.inflate<FragmentWeatherDetailInfoBinding>(
-            inflater, R.layout.fragment_weather_detail_info, container, false
-        )
-        binding.apply{
-            viewModel = sharedViewModel
+                inflater, R.layout.fragment_weather_detail_info, container, false
+            )
+        binding.apply {
+            lifecycleOwner = viewLifecycleOwner
+            viewModel = forecastViewModel
         }
         return binding.root
     }
+
+
 }

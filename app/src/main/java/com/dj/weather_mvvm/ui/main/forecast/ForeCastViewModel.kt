@@ -6,12 +6,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dj.weather_mvvm.model.Daily
 import com.dj.weather_mvvm.model.WeatherInfo
 import com.dj.weather_mvvm.repository.WeatherRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class WeatherListViewModel
+class ForeCastViewModel
 @ViewModelInject
 constructor(
     private val weatherRepository: WeatherRepository
@@ -31,6 +32,10 @@ constructor(
     val location: MutableLiveData<Location>
         get() = _location
 
+    private val _daily: MutableLiveData<Daily> = MutableLiveData()
+    val dailyItem: MutableLiveData<Daily>
+        get() = _daily
+
     init {
         _isNetworkAvailable.value = false
         getTodayDailyItemFromDatabaseIfNotNull()
@@ -43,6 +48,10 @@ constructor(
 
     fun setLocation(location: Location?) {
         _location.value = location
+    }
+
+    fun setDailyItem(daily: Daily){
+        _daily.value = daily
     }
 
     fun setDailyItemClicked(value: Boolean) {
@@ -70,7 +79,6 @@ constructor(
             )
             weatherRepository.deleteAllWeatherData()
             weatherRepository.insertWeatherData(weatherInfo)
-
             _weatherInfo.postValue(weatherInfo)
         }
     }
