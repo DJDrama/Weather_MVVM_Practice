@@ -20,6 +20,10 @@ constructor(
     val dailyItem: LiveData<Daily>
         get() = _dailyItem
 
+    private val _isRefreshing = MutableLiveData<Boolean>()
+    val isRefreshing: LiveData<Boolean>
+        get() = _isRefreshing
+
     init {
         getTodayDailyItemFromDatabaseIfNotNull()
     }
@@ -35,7 +39,8 @@ constructor(
         }
     }
 
-    private fun fetchWeatherInfo() {
+    fun fetchWeatherInfo() {
+        _isRefreshing.value = true
         viewModelScope.launch(IO) {
             //1. First fetch latitude and longitude from database
             val locationLatLng = weatherRepository.getLocationLatLng()
@@ -50,6 +55,7 @@ constructor(
 
             // Zero index --> Today
             _dailyItem.postValue(weatherInfo.dailyList[0])
+            _isRefreshing.postValue(false)
         }
     }
 }
