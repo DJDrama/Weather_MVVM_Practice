@@ -4,24 +4,27 @@ import android.annotation.SuppressLint
 import android.location.Location
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.dj.weather_mvvm.R
-import com.dj.weather_mvvm.ui.main.WeatherSharedViewModel
 import com.google.android.libraries.maps.CameraUpdateFactory
 import com.google.android.libraries.maps.GoogleMap
 import com.google.android.libraries.maps.model.LatLng
 import com.google.android.libraries.maps.model.MarkerOptions
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_google_map.*
 
+@AndroidEntryPoint
 class GoogleMapFragment : Fragment(R.layout.fragment_google_map),
     com.google.android.libraries.maps.OnMapReadyCallback {
     companion object {
         const val ZOOM_LEVEL = 13f
     }
-    private val viewModel: WeatherSharedViewModel by activityViewModels()
+    private val viewModel: GoogleMapViewModel by viewModels()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         map.onCreate(savedInstanceState)
@@ -34,7 +37,6 @@ class GoogleMapFragment : Fragment(R.layout.fragment_google_map),
                     location.latitude = latitude
                     location.longitude = longitude
                     viewModel.setLocation(location)
-                    findNavController().navigateUp()
                 }
             }
         }
@@ -65,8 +67,8 @@ class GoogleMapFragment : Fragment(R.layout.fragment_google_map),
                         this.location?.let { location ->
                             with(gMap) {
                                 val latLng = LatLng(
-                                    location.latitude,
-                                    location.longitude
+                                    location.lat.toDouble(),
+                                    location.lon.toDouble()
                                 )
                                 moveCamera(
                                     CameraUpdateFactory.newLatLngZoom(
@@ -80,6 +82,14 @@ class GoogleMapFragment : Fragment(R.layout.fragment_google_map),
                         }
                     }
                 }
+            }
+        }
+        viewModel.isLocationLatLngInserted.observe(viewLifecycleOwner){
+            if(it){
+                Toast.makeText(requireContext(), "Set Complete!", Toast.LENGTH_SHORT).show()
+                findNavController().navigateUp()
+            }else{
+                Toast.makeText(requireContext(), "Please Try again", Toast.LENGTH_SHORT).show()
             }
         }
     }

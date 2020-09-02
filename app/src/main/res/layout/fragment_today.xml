@@ -13,8 +13,8 @@
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:refreshing = "@{viewModel.isRefreshing()}"
-        app:onRefreshListener="@{() -> viewModel.fetchWeatherInfo()}">
+        app:onRefreshListener="@{() -> viewModel.fetchWeatherInfo()}"
+        app:refreshing="@{viewModel.isRefreshing()}">
 
         <ScrollView
             android:layout_width="match_parent"

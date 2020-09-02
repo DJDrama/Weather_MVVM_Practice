@@ -9,7 +9,9 @@ import androidx.lifecycle.viewModelScope
 import com.dj.weather_mvvm.model.Daily
 import com.dj.weather_mvvm.repository.WeatherRepository
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class TodayViewModel
 @ViewModelInject
@@ -35,7 +37,9 @@ constructor(
                 // Index 0 in order to fetch "Today"'s daily item
                 val dailyItem = it.dailyList[0]
                 _dailyItem.postValue(dailyItem)
-            } ?: fetchWeatherInfo()
+            } ?: withContext(Main) {
+                fetchWeatherInfo()
+            }
         }
     }
 

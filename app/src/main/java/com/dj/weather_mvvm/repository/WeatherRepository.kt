@@ -52,4 +52,9 @@ class WeatherRepository constructor(
     }
 
 
+    /** MORE **/
+    suspend fun fetchMyLocation(): LocationLatLng?{
+        return locationLatLngDao.getLatestLatLng()
+    }
+
 }
