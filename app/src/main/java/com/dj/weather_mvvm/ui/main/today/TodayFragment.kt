@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -33,5 +34,13 @@ class TodayFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         todayViewModel.getTodayDailyItemFromDatabaseIfNotNull()
+        subscribeObservers()
+    }
+    private fun subscribeObservers(){
+        todayViewModel.timeZone.observe(viewLifecycleOwner){
+            if(it.isNotEmpty()){
+                (requireActivity() as AppCompatActivity).supportActionBar?.title = it
+            }
+        }
     }
 }

@@ -26,17 +26,22 @@ constructor(
     val isRefreshing: LiveData<Boolean>
         get() = _isRefreshing
 
+    private val _timeZone = MutableLiveData<String>()
+    val timeZone: LiveData<String>
+        get() = _timeZone
+
     init {
 
     }
 
-     fun getTodayDailyItemFromDatabaseIfNotNull() {
+    fun getTodayDailyItemFromDatabaseIfNotNull() {
         viewModelScope.launch(IO) {
             val weatherInfo = weatherRepository.getWeatherDataFromCache()
             weatherInfo?.let {
                 // Index 0 in order to fetch "Today"'s daily item
                 val dailyItem = it.dailyList[0]
                 _dailyItem.postValue(dailyItem)
+                _timeZone.postValue(it.timeZone)
             } ?: withContext(Main) {
                 fetchWeatherInfo()
             }
@@ -59,7 +64,9 @@ constructor(
 
             // Zero index --> Today
             _dailyItem.postValue(weatherInfo.dailyList[0])
+            _timeZone.postValue(weatherInfo.timeZone)
             _isRefreshing.postValue(false)
+
         }
     }
 }
