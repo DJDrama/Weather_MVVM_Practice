@@ -27,10 +27,10 @@ constructor(
         get() = _isRefreshing
 
     init {
-        getTodayDailyItemFromDatabaseIfNotNull()
+
     }
 
-    private fun getTodayDailyItemFromDatabaseIfNotNull() {
+     fun getTodayDailyItemFromDatabaseIfNotNull() {
         viewModelScope.launch(IO) {
             val weatherInfo = weatherRepository.getWeatherDataFromCache()
             weatherInfo?.let {

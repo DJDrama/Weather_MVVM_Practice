@@ -77,6 +77,9 @@ constructor(
                         lon = it.longitude.toString()
                     )
                 )
+                //if inserted remove prefetched weather data from cache in order to reload
+                weatherRepository.deleteAllWeatherData()
+
                 if (insertedValue > 0) {
                     _isLocationLatLngInserted.postValue(true)
                 } else {

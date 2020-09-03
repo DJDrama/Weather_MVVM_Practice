@@ -39,6 +39,8 @@ class WeatherListFragment : Fragment(R.layout.fragment_weather_list), DailyItemC
         }
         recycler_view.adapter = weatherListAdapter
 
+        viewModel.getTodayDailyItemFromDatabaseIfNotNull()
+
         subscribeObservers()
         swipe_refresh_layout.setOnRefreshListener {
             recycler_view.visibility = View.INVISIBLE

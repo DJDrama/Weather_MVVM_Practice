@@ -38,7 +38,7 @@ constructor(
 
     init {
         _isNetworkAvailable.value = false
-        getTodayDailyItemFromDatabaseIfNotNull()
+      //  getTodayDailyItemFromDatabaseIfNotNull()
 
     }
 
@@ -58,7 +58,7 @@ constructor(
         _isDailyItemClicked.value = value
     }
 
-    private fun getTodayDailyItemFromDatabaseIfNotNull() {
+     fun getTodayDailyItemFromDatabaseIfNotNull() {
         viewModelScope.launch(Dispatchers.IO) {
             val weatherInfo = weatherRepository.getWeatherDataFromCache()
             weatherInfo?.let {

@@ -24,10 +24,11 @@ class WeatherRepository constructor(
  */
 
     /** LocationLatLngDao **/
-    suspend fun getLocationLatLng(): LocationLatLng{
+    suspend fun getLocationLatLng(): LocationLatLng {
         return locationLatLngDao.getLatestLatLng()
     }
-    suspend fun insertLocationData(locationLatLng: LocationLatLng) : Long{
+
+    suspend fun insertLocationData(locationLatLng: LocationLatLng): Long {
         return locationLatLngDao.insert(locationLatLng)
     }
 
@@ -39,7 +40,7 @@ class WeatherRepository constructor(
         )
     }
 
-    suspend fun deleteAllWeatherData(){
+    suspend fun deleteAllWeatherData() {
         weatherInfoDao.deleteAll()
     }
 
@@ -53,7 +54,7 @@ class WeatherRepository constructor(
 
 
     /** MORE **/
-    suspend fun fetchMyLocation(): LocationLatLng?{
+    suspend fun fetchMyLocation(): LocationLatLng? {
         return locationLatLngDao.getLatestLatLng()
     }
 
