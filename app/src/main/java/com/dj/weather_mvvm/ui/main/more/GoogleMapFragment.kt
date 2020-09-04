@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.dj.weather_mvvm.R
 import com.google.android.libraries.maps.CameraUpdateFactory
 import com.google.android.libraries.maps.GoogleMap
+import com.google.android.libraries.maps.MapView
 import com.google.android.libraries.maps.model.LatLng
 import com.google.android.libraries.maps.model.MarkerOptions
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,11 +25,15 @@ class GoogleMapFragment : Fragment(R.layout.fragment_google_map),
         const val ZOOM_LEVEL = 13f
     }
     private val viewModel: GoogleMapViewModel by viewModels()
+    private var mapView: MapView?=null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        map.onCreate(savedInstanceState)
-        map.getMapAsync(this)
+        mapView = view.findViewById(R.id.map)
+        mapView?.let{
+            it.onCreate(savedInstanceState)
+            it.getMapAsync(this)
+        }
         subscribeObservers()
         btn_set_current_location.setOnClickListener {
             viewModel.getGoogleMap()?.let {
@@ -94,9 +99,14 @@ class GoogleMapFragment : Fragment(R.layout.fragment_google_map),
         }
     }
 
-    override fun onDestroyView() {
+    override fun onDestroy() {
         viewModel.getGoogleMap()?.clear()
-        map.onDestroy()
+        mapView?.onDestroy()
+        mapView = null
+        super.onDestroy()
+    }
+
+    override fun onDestroyView() {
         super.onDestroyView()
     }
 }

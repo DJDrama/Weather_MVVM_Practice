@@ -45,7 +45,7 @@ class IntroSplashActivity : AppCompatActivity() {
     private lateinit var locationManager: LocationManager
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var mLocationRequest: LocationRequest
-    private lateinit var locationCallback: LocationCallback
+    private var locationCallback: LocationCallback?=null
     private var requestingLocationUpdates = false
 
     private lateinit var connectionLiveData: ConnectionLiveData
@@ -75,7 +75,6 @@ class IntroSplashActivity : AppCompatActivity() {
                     introSplashViewModel.setMyLocation(location)
                     //just do once so break
                     stopLocationUpdates()
-
                     break
                 }
             }
@@ -227,9 +226,18 @@ class IntroSplashActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         stopLocationUpdates()
+
+    }
+
+    override fun onDestroy() {
+        if(locationCallback!=null){
+            locationCallback=null
+        }
+        super.onDestroy()
     }
 
     private fun stopLocationUpdates() {
+        requestingLocationUpdates=false
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
     }
 
